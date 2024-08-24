@@ -1,13 +1,39 @@
 "use client";
-import React from "react";
-import styles from "@/styles/Third.module.css";
+import React, { useEffect, useState } from "react";
+import styles from "@/src/styles/Third.module.css";
 
 const ThirdPage = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check the initial theme
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    setIsDarkMode(prefersDark);
+
+    // Listen for changes in the theme preference
+    const handleChange = (e: any) => setIsDarkMode(e.matches);
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", handleChange);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", handleChange);
+    };
+  }, []);
+
   return (
     <div
-      className={`${styles.area} bg-white dark:bg-[rgb(18,18,18)]`}
+      className={styles.area}
       style={{
-        minHeight: "100vh", // Ensure the background covers the entire viewport
+        display: isDarkMode ? "block" : "none", // Display only in dark mode
+        background: isDarkMode
+          ? "-webkit-linear-gradient(to left, #8f94fb, #4e54c8)"
+          : "none",
       }}
     >
       <ul className={styles.circles}>
@@ -73,6 +99,7 @@ const ThirdPage = () => {
             alignItems: "flex-start",
             paddingLeft: "20px",
             textAlign: "left",
+            color: "black",
           }}
         >
           <div
@@ -128,6 +155,7 @@ const ThirdPage = () => {
             height="50%"
             src="https://www.youtube.com/embed/X3VV5TcCh6E"
             title="YouTube video"
+            frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             style={{
