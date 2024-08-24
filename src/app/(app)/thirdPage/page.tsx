@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import styles from "@/src/styles/Third.module.css";
+import styles from "@/styles/Third.module.css";
 
 const ThirdPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
