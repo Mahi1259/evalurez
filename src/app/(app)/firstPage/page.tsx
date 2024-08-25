@@ -21,29 +21,6 @@ const FirstPage = () => {
           recruiters, increasing your chances of landing your dream job. Get
           started today and Upload your resume for analysis!
         </p>
-        <Link href="/evaluateResume" className="inline-block group mr-9">
-          <div>
-            <h1 className="text-3xl font-bold group-hover:text-green-500 transition-all">
-              {" "}
-              Evaluate your Resume!
-            </h1>
-            <div className="w-full h-2 bg-purple-800 rounded-full"></div>
-            <div className="w-full h-2 bg-purple-300 rounded-full translate-x-3"></div>
-          </div>
-        </Link>
-        <Link
-          href="./Home/components/createResume"
-          className="inline-block group"
-        >
-          <div>
-            <h1 className="text-3xl font-bold group-hover:text-green-500 transition-all">
-              {" "}
-              Create your Resume!
-            </h1>
-            <div className="w-full h-2 bg-purple-800 rounded-full"></div>
-            <div className="w-full h-2 bg-purple-300 rounded-full translate-x-3"></div>
-          </div>
-        </Link>
       </div>
       <div
         className={`w-72 h-72 space-y-3 -rotate-[30deg] ${styles.animateSlideInRight}`}
