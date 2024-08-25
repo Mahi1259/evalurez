@@ -36,7 +36,7 @@ const ForgotPasswordForm = () => {
       setErrors({
         email: "An error occurred. Please try again.",
       });
-      message.error("An error occurred. Please try again.");
+      message.error("An error occurred. Please try again later.");
     }
   };
 
