@@ -1,8 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Form, Input, Checkbox, Button,message } from "antd";
+import React, { useState } from "react";
+import { Form, Input, Checkbox, Button, message } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Use the built-in useRouter hook
 import { useAuth } from "../../hooks/auth";
 import AuthSessionStatus from "../AuthSessionStatus";
 
@@ -13,19 +14,14 @@ type FieldType = {
 };
 
 const Login: React.FC = () => {
-  const [form] = Form.useForm(); // Initialize the form
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
-  const [router, setRouter] = useState<any>(null);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
-  const [status, setStatus] = useState<string | null>(null); // Added status state
+  const [status, setStatus] = useState<string | null>(null);
 
-  useEffect(() => {
-    import("next/router").then((NextRouter) => {
-      setRouter(NextRouter.default);
-    });
-  }, []);
+  const router = useRouter(); // Use useRouter directly
 
   const { login } = useAuth({
     middleware: "guest",
@@ -35,6 +31,7 @@ const Login: React.FC = () => {
   const onFinish = async (values: FieldType) => {
     setLoading(true);
     setErrors({});
+    setStatus(null);
 
     try {
       await login({
@@ -48,7 +45,9 @@ const Login: React.FC = () => {
               "These credentials do not match our records."
             )
           ) {
-            message.error("Invalid credentials. Please check your email or password.");
+            message.error(
+              "Invalid credentials. Please check your email or password."
+            );
           } else {
             form.setFields([
               {
@@ -65,9 +64,13 @@ const Login: React.FC = () => {
         },
         setStatus,
       });
-      router.push("/dashboard");
+      // Delay the redirect to ensure the loading indicator is visible
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 500); // Adjust the delay if needed
     } catch (error) {
-
+      // Handle network errors
+      message.error("Login failed, please try again later.");
     } finally {
       setLoading(false);
     }
@@ -76,8 +79,6 @@ const Login: React.FC = () => {
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
-
-  if (!router) return null;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-24 bg-white dark:bg-[rgb(18,18,18)]">
@@ -91,11 +92,10 @@ const Login: React.FC = () => {
           Login to your account
         </h2>
 
-        {/* AuthSessionStatus Component */}
         <AuthSessionStatus className="mb-4" status={status} />
 
         <Form
-          form={form} // Pass the form instance
+          form={form}
           name="basic"
           initialValues={{ remember: true }}
           onFinish={onFinish}

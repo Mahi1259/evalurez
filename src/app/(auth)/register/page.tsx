@@ -22,10 +22,8 @@ const RegisterPage = () => {
 
   const [form] = Form.useForm();
   const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
-  
 
   const onFinish = async (values: RegisterPageProps) => {
-
     try {
       await register({
         name: values.name,
@@ -62,10 +60,12 @@ const RegisterPage = () => {
           }
         },
       });
+      message.success("Registration successful! Redirecting...");
+      // Optional: Redirect if needed
+      // router.push("/dashboard");
     } catch (error) {
-      
+      message.error("Registration failed, please try again later.");
     }
-
   };
 
   return (
