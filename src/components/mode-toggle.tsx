@@ -28,13 +28,13 @@ export function ModeToggle() {
     >
       {theme === "dark" ? (
         <MoonOutlined
-          className="text-white transition-transform transform rotate-180"
-          style={{ fontSize: 24 }}
+          className="transition-transform transform rotate-180"
+          style={{ fontSize: 24, color: "#9b5de5" }}
         />
       ) : (
         <SunOutlined
-          className="text-black transition-transform transform rotate-0"
-          style={{ fontSize: 24 }}
+          className="transition-transform transform rotate-180"
+          style={{ fontSize: 24, color: "#9b5de5" }} 
         />
       )}
     </button>
