@@ -71,8 +71,8 @@ const FirstPage = () => {
 
               <div className="lg:col-span-5 flex justify-center lg:justify-end">
                 <div className="relative w-full max-w-md h-[500px]">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-purple-100 dark:bg-purple-900/20 rounded-full -z-10 blur-3xl"></div>
-                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-100 dark:bg-blue-900/20 rounded-full -z-10 blur-3xl"></div>
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-purple-400 dark:bg-purple-900/20 rounded-full -z-10 blur-3xl"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-300 dark:bg-blue-900/20 rounded-full -z-10 blur-3xl"></div>
 
                   <div className="relative z-10 h-full w-full flex items-center justify-center">
                     <div className="relative w-80 h-[450px]">

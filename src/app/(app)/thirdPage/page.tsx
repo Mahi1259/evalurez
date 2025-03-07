@@ -109,7 +109,7 @@ const ThirdPage = () => {
               className="order-1 lg:order-2 flex justify-center"
             >
               <div className="relative w-full max-w-md h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-purple-500 dark:from-purple-900/30 dark:to-purple-800/30"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-64 h-80 bg-white dark:bg-gray-800 rounded-lg shadow-2xl transform rotate-6 flex flex-col p-4">
                     <div className="w-full h-6 bg-purple-100 dark:bg-purple-900/50 rounded mb-3 flex items-center">
@@ -215,7 +215,7 @@ const ThirdPage = () => {
               className="order-1 lg:order-1 flex justify-center"
             >
               <div className="relative w-full max-w-md h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-500 dark:from-blue-900/30 dark:to-blue-800/30"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-72 h-80 bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-4 flex flex-col">
                     <div className="flex justify-between items-center mb-4">
