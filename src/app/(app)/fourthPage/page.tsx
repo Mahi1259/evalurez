@@ -1,51 +1,36 @@
-import React from "react";
+"use client";
+import { motion } from "framer-motion";
 
 const FourthPage = () => {
   return (
-    <div className="container mx-auto my-auto">
-      <h1 className="text-4xl font-bold text-black dark:text-white text-center underline underline-offset-8 decoration-purple-800">
-        The Future of Resume Enhancement
-      </h1>
-      <div className="grid grid-cols-2 gap-3 mt-8">
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-purple-800 transition-shadow cursor-pointer">
-          <h2 className="text-2xl font-bold text-purple-800 mb-4 ">
-            AI-Powered Accuracy
-          </h2>
-          <p className="text-gray-700 hover:text-green-500">
-            Utilize the latest advancements in AI technology to ensure your
-            resume is accurately analyzed against job descriptions, giving you
-            an edge in the job market.
-          </p>
-        </div>
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-purple-800 transition-shadow cursor-pointer">
-          <h2 className="text-2xl font-bold text-purple-800 mb-4">
-            Personalized Feedback
-          </h2>
-          <p className="text-gray-700 hover:text-green-500">
-            Receive tailored feedback and actionable insights to optimize your
-            resume for each job application, maximizing your chances of success.
-          </p>
-        </div>
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-purple-800 transition-shadow cursor-pointer">
-          <h2 className="text-2xl font-bold text-purple-800 mb-4">
-            Time and Cost Efficiency
-          </h2>
-          <p className="text-gray-700 hover:text-green-500">
-            Save time and resources by streamlining the resume improvement
-            process. With Evalurez, enhance your resume efficiently and
-            effectively.
-          </p>
-        </div>
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-purple-800 transition-shadow cursor-pointer">
-          <h2 className="text-2xl font-bold text-purple-800 mb-4">
-            Stay Ahead of the Competition
-          </h2>
-          <p className="text-gray-700 hover:text-green-500">
-            Gain a competitive advantage in the job market by aligning your
-            resume with employer expectations and showcasing your qualifications
-            effectively.
-          </p>
-        </div>
+    <div className="w-full py-16 px-4 md:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto text-center">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-3xl md:text-4xl font-bold mb-6"
+        >
+          Ready to Elevate Your Career?
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-lg text-gray-700 dark:text-gray-300 mb-8"
+        >
+          Join Evalurez today and unlock the power of AI to transform your
+          resume and land your dream job.
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <button className="px-6 py-3 bg-purple-800 hover:bg-purple-900 text-white rounded-md font-medium transition-colors">
+            Watch Video
+          </button>
+        </motion.div>
       </div>
     </div>
   );
