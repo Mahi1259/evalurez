@@ -14,7 +14,7 @@ const FirstPage = () => {
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-8">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+                <h1 className="text-4xl md:text-4xl lg:text-6xl font-bold tracking-tight">
                   Transform Your Resume with{" "}
                   <span className="relative">
                     <span className="text-purple-800 dark:text-purple-400">
@@ -35,7 +35,7 @@ const FirstPage = () => {
                   today!
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mt-8">
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mt-8">
                   <div className="p-6 border-l-4 border-purple-800 dark:border-purple-400">
                     <h3 className="text-xl md:text-2xl font-bold mb-3 text-purple-800 dark:text-purple-400">
                       AI Resume Builder
@@ -57,7 +57,7 @@ const FirstPage = () => {
                       chances.
                     </p>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="pt-8 flex flex-col sm:flex-row gap-6">
                   <button className="px-8 py-4 bg-purple-800 hover:bg-purple-900 text-white text-xl rounded-md font-medium transition-colors">
