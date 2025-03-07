@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
@@ -30,26 +30,31 @@ const Navbar = () => {
 
   return (
     <div className="navbar-container">
-      <ul className="flex justify-between items-center py-4 px-9 rounded-lg w-full text-xl">
+      <ul className="flex justify-between items-center py-4 px-4 md:px-9 rounded-lg w-full text-xl">
         <Link href="/">
           <h1>
             <Image
               src="/new.png"
               alt="Company Logo"
               width={180}
-              height={100}
+              height={140}
               priority
               className="-mt-2"
-              style={{ width: "auto", height: "auto" }}
+              style={{
+                width: "180px",
+                height: "auto",
+                minWidth: "140px",
+                maxWidth: "180px",
+              }}
             />
           </h1>
         </Link>
 
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 md:gap-4 items-center">
           {user && (
             <Link href="/dashboard">
               <li className="text-base">
-                <span className="text-[18px]">Dashboard</span>
+                <span className="text-[16px] md:text-[18px]">Dashboard</span>
               </li>
             </Link>
           )}
@@ -59,7 +64,7 @@ const Navbar = () => {
                 onClick={toggleDropdown}
                 className={`${
                   theme === "dark" ? "text-white" : "text-black"
-                } text-[17px] flex items-center gap-1`}
+                } text-[15px] md:text-[17px] flex items-center gap-1`}
               >
                 {user.name}
                 <svg
@@ -94,12 +99,12 @@ const Navbar = () => {
             <>
               <Link href="/login">
                 <li className="text-base">
-                  <span className="text-lg">Login</span>
+                  <span className="text-[16px] md:text-lg">Login</span>
                 </li>
               </Link>
               <Link href="/register">
                 <li className="text-base">
-                  <span className="bg-purple-500 text-white px-2 py-1 rounded-lg text-lg">
+                  <span className="bg-purple-500 text-white px-2 py-1 rounded-lg text-[16px] md:text-lg">
                     Register
                   </span>
                 </li>
