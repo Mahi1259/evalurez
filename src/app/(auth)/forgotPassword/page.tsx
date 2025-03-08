@@ -98,7 +98,12 @@
 import React from 'react'
 
 const ForgotPasswordForm = () => {
-  return <div></div>;
+  return (
+    <div>
+      <h1>Forgot Password</h1>
+      {/* Add your Forgot Password form here */}
+    </div>
+  );
 };
 
 export default ForgotPasswordForm;
