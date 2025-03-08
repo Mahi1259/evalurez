@@ -47,7 +47,7 @@ const Navbar = () => {
           {isSignedIn && (
             <Link href="/dashboard">
               <li className="text-base">
-                <span className="text-[16px] md:text-[18px]">Dashboard</span>
+                <span className="text-[16px] md:text-[18px]"></span>
               </li>
             </Link>
           )}
