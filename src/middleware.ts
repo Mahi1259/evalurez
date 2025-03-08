@@ -1,20 +1,18 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// Define protected routes - routes that require authentication
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)", // Protect all dashboard routes
-  "/forum(.*)", // Protect all forum routes
-]);
-
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect();
+  const { userId } = await auth();
+  const url = new URL(req.nextUrl);
+
+  // If a user is logged in and tries to access '/', redirect them to '/dashboard'
+  if (userId && url.pathname === "/") {
+    return Response.redirect(new URL("/dashboard", req.nextUrl));
+  }
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
     "/(api|trpc)(.*)",
   ],
 };
