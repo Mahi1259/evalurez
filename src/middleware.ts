@@ -7,7 +7,7 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const url = new URL(req.nextUrl);
 
-  // If a user is logged in and tries to access '/', redirect them to '/dashboard'
+  // If a user is logged in and tries to access '/', Redirects them to '/dashboard'
   if (userId && url.pathname === "/") {
     return Response.redirect(new URL("/dashboard", req.nextUrl));
   }
