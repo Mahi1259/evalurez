@@ -2,7 +2,7 @@
 // import { useState } from "react";
 // import { Form, Input, Button, message } from "antd";
 // import { MailOutlined } from "@ant-design/icons";
-// import { useAuth } from "../../hooks/auth";
+// // import { useAuth } from "../../hooks/auth";
 // import AuthSessionStatus from "../AuthSessionStatus";
 
 // const ForgotPasswordForm = () => {
@@ -95,3 +95,10 @@
 // };
 
 // export default ForgotPasswordForm;
+import React from 'react'
+
+const ForgotPasswordForm = () => {
+  return <div></div>;
+};
+
+export default ForgotPasswordForm;
