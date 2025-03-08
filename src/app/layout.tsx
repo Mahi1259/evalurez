@@ -16,10 +16,10 @@ export const metadata = {
   description: "Get started today and Upload your resume for analysis!",
 };
 
+const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
 const RootLayout = ({ children }: React.PropsWithChildren) => (
-  <ClerkProvider
-    publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-  >
+  <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
     <html lang="en">
       <body
         className={`${inter.className} overflow-y-scroll overflow-x-hidden`}
