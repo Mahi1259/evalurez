@@ -49,7 +49,7 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
   const pathname = usePathname();
   const { theme: currentTheme } = useTheme();
   const isDarkMode = currentTheme === "dark";
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   // const { user } = useAuth();
 
