@@ -98,7 +98,7 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
       Menu: {
         colorBgContainer: isDarkMode ? "rgb(10,10,10)" : undefined,
         itemBg: isDarkMode ? "rgb(10,10,10)" : undefined,
-        itemColor: isDarkMode ? "rgba(255, 255, 255, 0.85)" : undefined,
+        itemColor: isDarkMode ? "#FFFFFF" : undefined,
         itemHoverColor: "#7F4AD7",
         itemSelectedColor: "#7F4AD7",
         itemSelectedBg: isDarkMode
@@ -135,7 +135,11 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
               href={item.key}
               onClick={() => handleMenuClick(item.key)}
               className={`text-base font-medium ${
-                pathname === item.key ? "text-purple-500" : ""
+                pathname === item.key
+                  ? "text-purple-500"
+                  : isDarkMode
+                  ? "text-white"
+                  : ""
               }`}
             >
               {item.label}
@@ -168,15 +172,13 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
           top: 0,
           left: 0,
           backgroundColor: isDarkMode ? "rgb(10,10,10)" : undefined,
-          borderRight: `1px solid ${
-            isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"
-          }`,
+          borderRight: "none",
           boxShadow: isDarkMode
             ? "none"
             : "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
         }}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between p-4">
           <div
             className={`overflow-hidden transition-all duration-300 ${
               collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
@@ -213,7 +215,7 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
         padding: 0,
         backgroundColor: isDarkMode ? "rgb(10,10,10)" : undefined,
       }}
-      >
+    >
       <div
         style={{
           padding: "16px",
@@ -228,7 +230,6 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
       {renderMenu()}
     </Drawer>
   );
-
 
   // Mobile toggle button (fixed at the bottom)
   const MobileToggle = (

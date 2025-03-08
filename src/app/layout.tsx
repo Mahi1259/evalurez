@@ -6,7 +6,6 @@ import StyledComponentsRegistry from "../lib/AntRegistry";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import { ThemeProvider } from "../components/theme-provider";
-import { dark, neobrutalism, shadesOfPurple } from "@clerk/themes";
 
 // Load Inter font
 const inter = Inter({ subsets: ["latin"] });
@@ -18,12 +17,11 @@ export const metadata = {
 
 const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
-
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
-        className={`${inter.className} overflow-y-scroll overflow-x-hidden`}
+        className={`${inter.className} flex flex-col min-h-screen overflow-x-hidden`}
       >
         <ThemeProvider
           attribute="class"
@@ -32,10 +30,9 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
           disableTransitionOnChange
         >
           <StyledComponentsRegistry>
-            <div className="mx-auto text-2xl gap-2 mb-10">
-              {/* Remove the header with SignedIn/SignedOut since we're moving this to Navbar */}
+            <div className="flex flex-col min-h-screen">
               <Navbar />
-              {children}
+              <main className="flex-grow">{children}</main>
               <Footer />
             </div>
           </StyledComponentsRegistry>
