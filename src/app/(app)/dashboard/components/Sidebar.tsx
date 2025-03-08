@@ -210,7 +210,7 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
       open={show}
       width={280}
       closeIcon={<CloseOutlined className="text-lg" />}
-      title={<span className="text-lg font-bold">Dashboard</span>}
+      title={<span className="text-lg font-bold"></span>}
       style={{
         padding: 0,
         backgroundColor: isDarkMode ? "rgb(10,10,10)" : undefined,
@@ -225,7 +225,6 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
           backgroundColor: isDarkMode ? "rgb(10,10,10)" : undefined,
         }}
       >
-        <span className="text-lg font-bold">Dashboard</span>
       </div>
       {renderMenu()}
     </Drawer>
