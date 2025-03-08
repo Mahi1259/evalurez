@@ -16,12 +16,12 @@ export const metadata = {
   description: "Get started today and Upload your resume for analysis!",
 };
 
-const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
 
 
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
-  <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+  
     <html lang="en">
       <body
         className={`${inter.className} overflow-y-scroll overflow-x-hidden`}
@@ -35,15 +35,16 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
           <StyledComponentsRegistry>
             <div className="mx-auto text-2xl gap-2 mb-10">
               {/* Remove the header with SignedIn/SignedOut since we're moving this to Navbar */}
+              <ClerkProvider>
               <Navbar />
               {children}
               <Footer />
+              </ClerkProvider>
             </div>
           </StyledComponentsRegistry>
         </ThemeProvider>
       </body>
     </html>
-  </ClerkProvider>
 );
 
 export default RootLayout;
