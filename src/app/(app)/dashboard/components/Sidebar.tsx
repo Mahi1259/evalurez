@@ -1,17 +1,19 @@
 "use client";
-import { Layout, Menu, Drawer } from "antd";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
+import { Menu, Layout, Drawer, ConfigProvider, theme as antTheme } from "antd";
 import {
   InfoCircleOutlined,
   MailOutlined,
   ArrowUpOutlined,
   InboxOutlined,
-  UserOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
-import { ChevronLeft } from "lucide-react";
-import { useAuth } from "../../../hooks/auth";
-import Link from "next/link";
-import React, { useState, useEffect } from "react";
-import { usePathname } from "next/navigation"; // Use new hook
+// import { useAuth } from "../../../hooks/auth";
 
 const { Sider } = Layout;
 
@@ -22,143 +24,230 @@ interface SidebarProps {
 
 const menuItems = [
   {
-    key: "1",
-    icon: <InboxOutlined style={{ fontSize: "24px", color: "inherit" }} />,
+    key: "/dashboard",
+    icon: <InboxOutlined />,
     label: "Job Postings",
-    href: "/dashboard",
   },
   {
-    key: "2",
-    icon: <ArrowUpOutlined style={{ fontSize: "24px", color: "inherit" }} />,
+    key: "/dashboard/Upgradeplan",
+    icon: <ArrowUpOutlined />,
     label: "Upgrade Plan",
-    href: "/dashboard/Upgradeplan",
   },
   {
-    key: "3",
-    icon: <InfoCircleOutlined style={{ fontSize: "24px", color: "inherit" }} />,
+    key: "/dashboard/Aboutus",
+    icon: <InfoCircleOutlined />,
     label: "About Us",
-    href: "/dashboard/Aboutus",
   },
   {
-    key: "4",
-    icon: <MailOutlined style={{ fontSize: "24px", color: "inherit" }} />,
+    key: "/dashboard/Contact",
+    icon: <MailOutlined />,
     label: "Contact",
-    href: "/dashboard/Contact",
   },
 ];
 
 const Sidebar = ({ show, setter }: SidebarProps) => {
-  const [collapsed, setCollapsed] = useState(true);
-  const [status, setStatus] = useState(false);
-  const { user } = useAuth();
-  const pathname = usePathname(); // Use usePathname instead of useRouter
-  const [currentPath, setCurrentPath] = useState(pathname);
+  const pathname = usePathname();
+  const { theme: currentTheme } = useTheme();
+  const isDarkMode = currentTheme === "dark";
+  const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  // const { user } = useAuth();
 
+  // Check if we're on mobile
   useEffect(() => {
-    setCurrentPath(pathname);
-  }, [pathname]);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth < 768) {
+        setCollapsed(true);
+      }
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add event listener
+    window.addEventListener("resize", checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleToggle = () => {
-    setStatus(true);
     setCollapsed(!collapsed);
-    setTimeout(() => setStatus(false), 500);
   };
 
   const handleCloseDrawer = () => setter(false);
 
-  const renderMenu = (isDrawer: boolean) => (
-    <Menu
-      theme="light"
-      mode="inline"
-      defaultSelectedKeys={[currentPath]}
-      items={[
-        ...menuItems.map(({ key, icon, label, href }) => {
-          const isActive = currentPath === href;
-          return {
-            key,
-            icon: React.cloneElement(icon, {
-              style: {
-                fontSize: "24px",
-                color: isActive ? "#7F4AD7" : "inherit",
-                filter: isActive ? "drop-shadow(0 0 6px blue)" : "none",
-              },
-            }),
-            label: (
-              <Link
-                href={href}
-                onClick={isDrawer ? handleCloseDrawer : () => setter(false)}
-                className={`block w-full py-2 px-3 rounded-md text-base ${
-                  isActive
-                    ? "text-purple-500 dark:text-purple-400"
-                    : "dark:text-white"
-                } hover:bg-gray-300 dark:hover:bg-gray-400 hover:text-white`}
-              >
-                {label}
-              </Link>
-            ),
+  const handleMenuClick = (key: string) => {
+    if (isMobile) {
+      handleCloseDrawer();
+    }
+  };
+
+  // Custom theme for Ant Design
+  const customTheme = {
+    algorithm: isDarkMode ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
+    token: {
+      colorPrimary: "#7F4AD7",
+      borderRadius: 6,
+      colorLink: "#7F4AD7",
+      colorLinkHover: "#9B6AE8",
+      fontFamily: "'Inter', sans-serif",
+    },
+    components: {
+      Menu: {
+        colorBgContainer: isDarkMode ? "rgb(10,10,10)" : undefined,
+        itemBg: isDarkMode ? "rgb(10,10,10)" : undefined,
+        itemColor: isDarkMode ? "rgba(255, 255, 255, 0.85)" : undefined,
+        itemHoverColor: "#7F4AD7",
+        itemSelectedColor: "#7F4AD7",
+        itemSelectedBg: isDarkMode
+          ? "rgba(127, 74, 215, 0.1)"
+          : "rgba(127, 74, 215, 0.1)",
+        itemHoverBg: isDarkMode ? "rgba(255, 255, 255, 0.08)" : "#f0f0f0", // Added hover color for light mode
+        itemHeight: 50,
+        itemMarginInline: 8,
+        fontSize: 15,
+      },
+      Layout: {
+        colorBgHeader: isDarkMode ? "rgb(10,10,10)" : undefined,
+        colorBgBody: isDarkMode ? "rgb(10,10,10)" : undefined,
+        colorBgTrigger: isDarkMode ? "rgb(18,18,18)" : undefined,
+      },
+    },
+  };
+
+  const renderMenu = () => (
+    <ConfigProvider theme={customTheme}>
+      <Menu
+        mode="inline"
+        selectedKeys={[pathname]}
+        items={menuItems.map((item) => ({
+          key: item.key,
+          icon: React.cloneElement(item.icon, {
             style: {
-              color: isActive ? "#7F4AD7" : "inherit",
-              backgroundColor: "transparent",
-              fontSize: "18px",
-              fontWeight: isActive ? "bold" : "normal",
+              fontSize: "20px",
+              color: pathname === item.key ? "#7F4AD7" : undefined,
             },
-          };
-        }),
-        {
-          key: "5",
-          icon: <UserOutlined style={{ fontSize: "24px", color: "inherit" }} />,
-          label: user?.email || "Not logged in",
-          style: {
-            marginTop: "415px",
-            color: "inherit",
-            background: "transparent",
-            fontSize: "18px",
-          },
-          className: "dark:text-white",
-        },
-      ]}
-      className="dark:bg-[rgb(18,18,18)] dark:text-white"
+          }),
+          label: (
+            <Link
+              href={item.key}
+              onClick={() => handleMenuClick(item.key)}
+              className={`text-base font-medium ${
+                pathname === item.key ? "text-purple-500" : ""
+              }`}
+            >
+              {item.label}
+            </Link>
+          ),
+        }))}
+        style={{
+          height: "100%",
+          borderRight: 0,
+          paddingTop: "12px",
+        }}
+      />
+    </ConfigProvider>
+  );
+
+  // Desktop sidebar
+  const DesktopSidebar = (
+    <ConfigProvider theme={customTheme}>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        width={280}
+        collapsedWidth={80}
+        className="hidden md:block transition-all duration-300 ease-in-out"
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          position: "sticky",
+          top: 0,
+          left: 0,
+          backgroundColor: isDarkMode ? "rgb(10,10,10)" : undefined,
+          borderRight: `1px solid ${
+            isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"
+          }`,
+          boxShadow: isDarkMode
+            ? "none"
+            : "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+        }}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+          <div
+            className={`overflow-hidden transition-all duration-300 ${
+              collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+            }`}
+          ></div>
+          <button
+            onClick={handleToggle}
+            className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? (
+              <MenuUnfoldOutlined className="text-xl" />
+            ) : (
+              <MenuFoldOutlined className="text-xl" />
+            )}
+          </button>
+        </div>
+        {renderMenu()}
+      </Sider>
+    </ConfigProvider>
+  );
+
+  // Mobile drawer
+  const MobileDrawer = (
+    <Drawer
+      placement="left"
+      closable={true}
+      onClose={handleCloseDrawer}
+      open={show}
+      width={280}
+      closeIcon={<CloseOutlined className="text-lg" />}
+      title={<span className="text-lg font-bold">Dashboard</span>}
       style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        fontSize: "18px",
+        padding: 0,
+        backgroundColor: isDarkMode ? "rgb(10,10,10)" : undefined,
       }}
-    />
+      >
+      <div
+        style={{
+          padding: "16px",
+          borderBottom: `1px solid ${
+            isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"
+          }`,
+          backgroundColor: isDarkMode ? "rgb(10,10,10)" : undefined,
+        }}
+      >
+        <span className="text-lg font-bold">Dashboard</span>
+      </div>
+      {renderMenu()}
+    </Drawer>
+  );
+
+
+  // Mobile toggle button (fixed at the bottom)
+  const MobileToggle = (
+    <div className="fixed bottom-6 left-6 md:hidden z-50">
+      <button
+        onClick={() => setter(true)}
+        className="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500 text-white shadow-lg hover:bg-purple-600 transition-colors"
+        aria-label="Open menu"
+      >
+        <MenuUnfoldOutlined className="text-xl" />
+      </button>
+    </div>
   );
 
   return (
     <>
-      <Sider
-        className="site-layout-background dark:bg-[rgb(18,18,18)] dark:text-white"
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        width={300}
-      >
-        <div className="p-2 flex items-center justify-end">
-          <ChevronLeft
-            className={`cursor-pointer text-3xl text-gray-500 dark:text-white transition-transform ${
-              collapsed ? "rotate-180" : ""
-            }`}
-            onClick={handleToggle}
-          />
-        </div>
-        {renderMenu(false)}
-      </Sider>
-      <Drawer
-        placement="right"
-        closable={false}
-        onClose={handleCloseDrawer}
-        open={show}
-        width={300}
-        style={{
-          padding: 0,
-        }}
-        className="dark:bg-[rgb(18,18,18)] dark:text-white"
-      >
-        {renderMenu(true)}
-      </Drawer>
+      {DesktopSidebar}
+      {MobileDrawer}
+      {MobileToggle}
     </>
   );
 };

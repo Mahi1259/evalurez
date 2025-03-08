@@ -1,31 +1,24 @@
 "use client";
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "../app/hooks/auth";
+import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "./mode-toggle";
 import { useTheme } from "next-themes";
+import { useAuth, useUser, UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
-  const { logout, user } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && !user && pathname === "/dashboard") {
-      router.push("/login");
-    }
-  }, [user, router, pathname]);
+  // Check if current path is a sign-in or sign-up route
+  const isAuthPage =
+    pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up");
 
-  const handleLogout = () => {
-    logout();
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const handleGetStarted = () => {
+    router.push("/sign-in");
   };
 
   return (
@@ -51,64 +44,43 @@ const Navbar = () => {
         </Link>
 
         <div className="flex gap-2 md:gap-4 items-center">
-          {user && (
+          {isSignedIn && (
             <Link href="/dashboard">
               <li className="text-base">
                 <span className="text-[16px] md:text-[18px]">Dashboard</span>
               </li>
             </Link>
           )}
-          {user ? (
-            <div className="relative">
-              <button
-                onClick={toggleDropdown}
+
+          {isLoaded && isSignedIn ? (
+            <div className="flex items-center gap-2">
+              <span
                 className={`${
                   theme === "dark" ? "text-white" : "text-black"
-                } text-[15px] md:text-[17px] flex items-center gap-1`}
+                } text-[15px] md:text-[17px]`}
               >
-                {user.name}
-                <svg
-                  className={`w-4 h-4 transform transition-transform ${
-                    isDropdownOpen ? "rotate-180" : "rotate-0"
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              {isDropdownOpen && (
-                <ul className="absolute right-0 mt-2 py-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
-                  <li
-                    onClick={handleLogout}
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    Logout
-                  </li>
-                </ul>
-              )}
+                {user?.firstName || user?.username || "User"}
+              </span>
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "h-8 w-8 md:h-9 md:w-9",
+                  },
+                }}
+              />
             </div>
           ) : (
             <>
-              <Link href="/login">
-                <li className="text-base">
-                  <span className="text-[16px] md:text-lg">Login</span>
-                </li>
-              </Link>
-              <Link href="/register">
-                <li className="text-base">
-                  <span className="bg-purple-500 text-white px-2 py-1 rounded-lg text-[16px] md:text-lg">
-                    Register
-                  </span>
-                </li>
-              </Link>
+              {!isAuthPage && (
+                <div className="text-base">
+                  <button
+                    onClick={handleGetStarted}
+                    className="bg-purple-500 hover:bg-purple-600 transition-colors text-white px-4 py-2 rounded-lg text-[16px] md:text-lg font-medium"
+                  >
+                    Get Started
+                  </button>
+                </div>
+              )}
             </>
           )}
           <ModeToggle />
