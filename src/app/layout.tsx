@@ -21,7 +21,7 @@ const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
-  <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+  <ClerkProvider publishableKey="pk_test_YWRhcHRlZC1iYXQtNTYuY2xlcmsuYWNjb3VudHMuZGV2JA">
     <html lang="en">
       <body
         className={`${inter.className} overflow-y-scroll overflow-x-hidden`}
