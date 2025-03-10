@@ -18,7 +18,7 @@ export const metadata = {
 const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
-  <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+  <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl={"/sign-in"}>
     <html lang="en" className="h-full">
       <body
         className={`${inter.className} flex flex-col min-h-screen overflow-x-hidden`}
