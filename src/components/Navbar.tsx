@@ -32,13 +32,7 @@ const Navbar = () => {
               width={180}
               height={140}
               priority
-              className="-mt-2"
-              style={{
-                width: "180px",
-                height: "auto",
-                minWidth: "140px",
-                maxWidth: "180px",
-              }}
+              className="w-[180px] md:w-[200px] lg:w-[220px] h-auto"
             />
           </h1>
         </Link>
@@ -75,7 +69,7 @@ const Navbar = () => {
                 <div className="text-base">
                   <button
                     onClick={handleGetStarted}
-                    className="bg-purple-500 hover:bg-purple-600 transition-colors text-white px-4 py-2 rounded-lg text-[16px] md:text-lg font-medium"
+                    className="bg-purple-500 hover:bg-purple-600 transition-colors text-white px-2 py-1 rounded-lg text-[16px] md:text-lg font-medium"
                   >
                     Get Started
                   </button>
