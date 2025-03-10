@@ -110,9 +110,9 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
         fontSize: 15,
       },
       Layout: {
-        colorBgHeader: isDarkMode ? "rgb(10,10,10)" : undefined,
-        colorBgBody: isDarkMode ? "rgb(10,10,10)" : undefined,
-        colorBgTrigger: isDarkMode ? "rgb(18,18,18)" : undefined,
+        headerBg: isDarkMode ? "rgb(10,10,10)" : undefined,
+        bodyBg: isDarkMode ? "rgb(10,10,10)" : undefined,
+        triggerBg: isDarkMode ? "rgb(18,18,18)" : undefined,
       },
     },
   };
