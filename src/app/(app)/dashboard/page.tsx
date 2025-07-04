@@ -85,7 +85,7 @@ export default function Dashboard() {
             <div>
               <h1 className="text-2xl font-bold tracking-tight">CV Analysis Dashboard</h1>
               <p className="text-sm text-muted-foreground">
-                Upload job descriptions and CVs to get AI-powered matching insights with Google Gemini
+                Upload job descriptions and CVs to get AI-powered matching insights
               </p>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function Dashboard() {
             ) : (
               <>
                 <Sparkles className="mr-2 h-4 w-4" />
-                AI Analyze ({cvs.length} CVs)
+                Analyze with AI ({cvs.length} CVs)
               </>
             )}
           </Button>
