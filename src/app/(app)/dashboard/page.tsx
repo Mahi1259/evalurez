@@ -169,7 +169,7 @@ export default function Dashboard() {
               className="flex items-center gap-2 text-sm text-muted-foreground"
             >
               <Sparkles className="h-4 w-4" />
-              Results from AI Analysis (Google AI Studio)
+              Results from AI Analysis
             </motion.div>
             <AnalysisResults results={analysisResults} />
           </div>
