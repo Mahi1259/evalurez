@@ -1,0 +1,192 @@
+.resumeContainer {
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  margin: 0 auto;
+  width: 8.5in;
+  min-height: 11in;
+  padding: 0.75in;
+  font-family: "Times New Roman", serif;
+  font-size: 11pt;
+  line-height: 1.4;
+  color: #000000;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.name {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  font-size: 24pt;
+}
+
+.contactInfo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-size: 10pt;
+}
+
+.section {
+  margin-bottom: 15px;
+}
+
+.sectionTitle {
+  font-size: 14pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid black;
+}
+
+.summaryText {
+  font-size: 11pt;
+  line-height: 1.4;
+  text-align: justify;
+}
+
+.subsection {
+  margin-bottom: 10px;
+}
+
+.subsectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.institutionName,
+.companyName {
+  font-weight: bold;
+  font-size: 11pt;
+}
+
+.degree,
+.position {
+  font-style: italic;
+  font-size: 11pt;
+}
+
+.dateLocation {
+  text-align: right;
+  font-size: 11pt;
+}
+
+/* FIXED: Ensure dates are never bold */
+.dateRangeNormal {
+  font-weight: normal !important;
+  font-size: 11pt !important;
+}
+
+.dateRange {
+  font-weight: normal !important;
+  font-size: 11pt !important;
+}
+
+.location {
+  font-style: italic;
+  font-size: 8pt;
+}
+
+.experienceItem {
+  margin-bottom: 15px;
+}
+
+.responsibilitiesList {
+  font-size: 10pt;
+  margin-top: 4px;
+  margin-left: 15px;
+  list-style: none;
+  padding: 0;
+}
+
+.responsibilityItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.bullet {
+  width: 4px;
+  height: 4px;
+  background-color: black;
+  border-radius: 50%;
+  margin-right: 8px;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.projectItem {
+  margin-bottom: 10px;
+}
+
+.projectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.projectName {
+  font-weight: bold;
+  font-size: 11pt;
+}
+
+.projectDate {
+  font-size: 11pt;
+  font-weight: normal !important;
+}
+
+/* FIXED: Added normal project date style without bold */
+.projectDateNormal {
+  font-size: 11pt;
+  font-weight: normal !important;
+}
+
+.projectDescription {
+  display: flex;
+  align-items: flex-start;
+  margin-left: 15px;
+}
+
+.descriptionText {
+  font-size: 10pt;
+  line-height: 1.4;
+  text-align: justify;
+}
+
+.skillsContainer {
+  font-size: 11pt;
+}
+
+.skillRow {
+  display: flex;
+  margin-bottom: 4px;
+}
+
+.skillLabel {
+  font-weight: bold;
+  min-width: 140px;
+  margin-right: 8px;
+}
+
+.achievementsList {
+  font-size: 10pt;
+  margin-left: 15px;
+  list-style: none;
+  padding: 0;
+}
+
+.achievementItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}

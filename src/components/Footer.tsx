@@ -1,29 +1,23 @@
 import Link from "next/link";
+import styles from "./Footer.module.css";
 
 const Footer = () => {
   const current_year = new Date().getFullYear();
   return (
-    <div
-      id="section_footer"
-      style={{
-        backgroundColor: "#FFFFF",
-        padding: "20px",
-        marginBottom: "-70px",
-      }}
-    >
-      <div className="text-center" style={{ fontSize: "19px" }}>
-        <Link href="/privacy-policy" passHref>
+    <div id="section_footer" className={styles.footer}>
+      <div className={styles.footerContent}>
+        <Link href="/privacy-policy" passHref className={styles.footerLink}>
           Privacy
         </Link>
-        <span style={{ margin: "0 8px" }}>|</span>
-        <Link href="/terms-and-conditions" passHref>
+        <span className={styles.separator}>|</span>
+        <Link href="/terms-and-conditions" passHref className={styles.footerLink}>
           Terms
         </Link>
-        <span style={{ margin: "0 8px" }}>|</span>
-        <Link href="mailto:evalurez@gmail.com" className="btn btn-link">
+        <span className={styles.separator}>|</span>
+        <Link href="mailto:evalurez@gmail.com" className={`${styles.footerLink} btn btn-link`}>
           Contact
         </Link>
-        <p style={{ fontSize: "12px", marginTop: "10px" }}>
+        <p className={styles.copyright}>
           Copyright © {current_year}, Evalurez LLC. All Rights Reserved.
         </p>
       </div>

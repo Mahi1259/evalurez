@@ -1,0 +1,50 @@
+/* Footer.module.css */
+
+.footer {
+  background-color: var(--footer-bg, transparent);
+  color: var(--footer-text, inherit);
+  padding: 20px;
+  margin-bottom: -70px;
+}
+
+.footerContent {
+  text-align: center;
+  font-size: 19px;
+}
+
+.footerLink {
+  text-decoration: none;
+  color: var(--footer-link-color, inherit);
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+  color: var(--footer-link-hover, inherit);
+}
+
+.separator {
+  margin: 0 8px;
+}
+
+.copyright {
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+/* Dark mode support using data attributes or classes */
+[data-theme="dark"] .footer,
+.dark .footer {
+  background-color: var(--footer-bg-dark, #1a1a1a);
+  color: var(--footer-text-dark, #ffffff);
+}
+
+[data-theme="dark"] .footerLink,
+.dark .footerLink {
+  color: var(--footer-link-dark, #e5e5e5);
+}
+
+[data-theme="dark"] .footerLink:hover,
+.dark .footerLink:hover {
+  color: var(--footer-link-hover-dark, #ffffff);
+}

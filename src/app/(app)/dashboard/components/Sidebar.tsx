@@ -27,10 +27,10 @@ const menuItems = [
   {
     key: "/dashboard",
     icon: <InboxOutlined />,
-    label: "Job Postings",
+    label: "Resume Analysis",
   },
   {
-    key: "/resume-builder",
+    key: "/dashboard/resume-builder",
     icon: <FileTextOutlined />,
     label: "Resume Builder",
   },
