@@ -13,6 +13,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   CloseOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons"
 
 const { Sider } = Layout
@@ -27,6 +28,11 @@ const menuItems = [
     key: "/dashboard",
     icon: <InboxOutlined />,
     label: "Job Postings",
+  },
+  {
+    key: "/resume-builder",
+    icon: <FileTextOutlined />,
+    label: "Resume Builder",
   },
   {
     key: "/dashboard/Upgradeplan",
