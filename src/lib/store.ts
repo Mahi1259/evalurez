@@ -82,16 +82,46 @@ const initialResumeData: ResumeData = {
     "Passionate software developer with 3+ years of experience in full-stack development and cloud technologies. Proficient in React, Node.js, and AWS with a strong background in building scalable web applications. Experienced in agile methodologies and collaborative development environments.",
 }
 
+// Save data to localStorage
+const saveToLocalStorage = (data: ResumeData) => {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("resumeData", JSON.stringify(data))
+    } catch (error) {
+      console.error("Error saving to localStorage:", error)
+    }
+  }
+}
+
+// Load data from localStorage
+const loadFromLocalStorage = (): ResumeData => {
+  if (typeof window !== "undefined") {
+    try {
+      const savedData = localStorage.getItem("resumeData")
+      if (savedData) {
+        return JSON.parse(savedData)
+      }
+    } catch (error) {
+      console.error("Error loading from localStorage:", error)
+    }
+  }
+  return initialResumeData
+}
+
 const resumeSlice = createSlice({
   name: "resume",
   initialState: {
-    data: initialResumeData,
+    data: initialResumeData, // Will be replaced by loadResumeData action
     activeTab: "personal-info",
-    isLoaded: true, // Always loaded since we're not using localStorage
-    selectedTemplate: "", // Add template selection state
-    showTemplateSelection: true, // Add flag to show template selection
+    isLoaded: false, // Changed to false so we can load data
+    selectedTemplate: "",
+    showTemplateSelection: true,
   },
   reducers: {
+    loadResumeData: (state) => {
+      state.data = loadFromLocalStorage()
+      state.isLoaded = true
+    },
     selectTemplate: (state, action: PayloadAction<string>) => {
       state.selectedTemplate = action.payload
       state.showTemplateSelection = false
@@ -109,11 +139,11 @@ const resumeSlice = createSlice({
         ...state.data.personalInfo,
         [field]: value,
       }
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     updateSummary: (state, action: PayloadAction<string>) => {
       state.data.summary = action.payload
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     setActiveTab: (state, action: PayloadAction<string>) => {
       state.activeTab = action.payload
@@ -126,7 +156,7 @@ const resumeSlice = createSlice({
         startDate: "",
         endDate: "",
       })
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     updateEducation: (state, action: PayloadAction<{ index: number; field: string; value: string }>) => {
       const { index, field, value } = action.payload
@@ -135,12 +165,12 @@ const resumeSlice = createSlice({
           ...state.data.education[index],
           [field]: value,
         }
-        // Removed localStorage save
+        saveToLocalStorage(state.data) // Add this line
       }
     },
     removeEducation: (state, action: PayloadAction<number>) => {
       state.data.education = state.data.education.filter((_, i) => i !== action.payload)
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     addExperience: (state) => {
       state.data.experience.push({
@@ -151,7 +181,7 @@ const resumeSlice = createSlice({
         endDate: "",
         responsibilities: [""],
       })
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     updateExperience: (state, action: PayloadAction<{ index: number; field: string; value: string | string[] }>) => {
       const { index, field, value } = action.payload
@@ -160,12 +190,12 @@ const resumeSlice = createSlice({
           ...state.data.experience[index],
           [field]: value,
         }
-        // Removed localStorage save
+        saveToLocalStorage(state.data) // Add this line
       }
     },
     removeExperience: (state, action: PayloadAction<number>) => {
       state.data.experience = state.data.experience.filter((_, i) => i !== action.payload)
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     addProject: (state) => {
       state.data.projects.push({
@@ -173,7 +203,7 @@ const resumeSlice = createSlice({
         date: "",
         description: "",
       })
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     updateProject: (state, action: PayloadAction<{ index: number; field: string; value: string }>) => {
       const { index, field, value } = action.payload
@@ -182,12 +212,12 @@ const resumeSlice = createSlice({
           ...state.data.projects[index],
           [field]: value,
         }
-        // Removed localStorage save
+        saveToLocalStorage(state.data) // Add this line
       }
     },
     removeProject: (state, action: PayloadAction<number>) => {
       state.data.projects = state.data.projects.filter((_, i) => i !== action.payload)
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     updateSkills: (state, action: PayloadAction<{ category: string; skills: string[] }>) => {
       const { category, skills } = action.payload
@@ -195,27 +225,28 @@ const resumeSlice = createSlice({
         ...state.data.skills,
         [category]: skills,
       }
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     addAchievement: (state) => {
       state.data.achievements.push("")
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
     updateAchievement: (state, action: PayloadAction<{ index: number; value: string }>) => {
       const { index, value } = action.payload
       if (state.data.achievements[index] !== undefined) {
         state.data.achievements[index] = value
-        // Removed localStorage save
+        saveToLocalStorage(state.data) // Add this line
       }
     },
     removeAchievement: (state, action: PayloadAction<number>) => {
       state.data.achievements = state.data.achievements.filter((_, i) => i !== action.payload)
-      // Removed localStorage save
+      saveToLocalStorage(state.data) // Add this line
     },
   },
 })
 
 export const {
+  loadResumeData, // Add this line
   selectTemplate,
   resetToTemplateSelection,
   updatePersonalInfo,

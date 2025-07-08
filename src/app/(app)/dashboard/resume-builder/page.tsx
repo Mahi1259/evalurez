@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Download, ArrowLeft } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
-import { setActiveTab, selectTemplate, resetToTemplateSelection } from "@/lib/store"
+import { setActiveTab, selectTemplate, resetToTemplateSelection, loadResumeData } from "@/lib/store"
 import PersonalInfoTab from "@/components/resume/personal-info-tab"
 import EducationTab from "@/components/resume/education-tab"
 import ExperienceTab from "@/components/resume/experience-tab"
@@ -25,8 +25,16 @@ function ResumeBuilderContent() {
     activeTab,
     showTemplateSelection,
     selectedTemplate,
+    isLoaded,
   } = useAppSelector((state) => state.resume)
   const [isGenerating, setIsGenerating] = useState(false)
+
+  // Load saved data when component mounts
+  useEffect(() => {
+    if (!isLoaded) {
+      dispatch(loadResumeData())
+    }
+  }, [dispatch, isLoaded])
 
   const tabs = ["personal-info", "education", "experience", "projects", "skills", "certifications"]
   const currentTabIndex = tabs.indexOf(activeTab)
