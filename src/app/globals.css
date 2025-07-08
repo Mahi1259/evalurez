@@ -20,13 +20,41 @@ body {
   overflow-x: hidden;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Prevent layout shift during hydration */
+.navbar-container {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
 }
 
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
 
+@layer utilities {
+  .text-balance {
+    text-align: center;
+  }
+
+  /* Only apply text-wrap: balance if supported */
+  @supports (text-wrap: balance) {
+    .text-balance {
+      text-align: initial;
+      text-wrap: balance;
+    }
+  }
+
+  /* Fallback for browsers that don't support text-wrap */
+  @supports not (text-wrap: balance) {
+    .text-balance {
+      text-align: center;
+      max-width: 60ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
 
 @layer base {
   :root {
@@ -56,6 +84,7 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -84,12 +113,11 @@ body {
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

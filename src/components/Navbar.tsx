@@ -6,13 +6,22 @@ import { usePathname, useRouter } from "next/navigation"
 import { ModeToggle } from "./mode-toggle"
 import { useTheme } from "next-themes"
 import { useAuth, useUser, UserButton } from "@clerk/nextjs"
+import { useEffect, useState } from "react"
 
 const Navbar = () => {
   const { isLoaded, isSignedIn } = useAuth()
   const { user } = useUser()
   const router = useRouter()
   const pathname = usePathname()
-  const { theme } = useTheme()
+  const { theme, resolvedTheme } = useTheme()
+
+  // State to handle hydration
+  const [mounted, setMounted] = useState(false)
+
+  // Fix hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Check if current path is a sign-in or sign-up route
   const isAuthPage = pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up")
@@ -20,6 +29,9 @@ const Navbar = () => {
   const handleGetStarted = () => {
     router.push("/sign-in")
   }
+
+  // Use resolvedTheme for more reliable theme detection after mount
+  const isDarkMode = mounted ? resolvedTheme === "dark" : false
 
   return (
     <div className="navbar-container">
@@ -36,39 +48,55 @@ const Navbar = () => {
         </Link>
 
         <div className="flex gap-2 md:gap-4 items-center">
-          {isSignedIn && (
+          {/* Dashboard link - only show when signed in */}
+          {mounted && isLoaded && isSignedIn && (
             <Link href="/dashboard" className="text-base">
               <span className="text-[16px] md:text-[18px]"></span>
             </Link>
           )}
 
-          {isLoaded && isSignedIn ? (
-            <div className="flex items-center gap-2">
-              <span className={`${theme === "dark" ? "text-white" : "text-black"} text-[15px] md:text-[17px]`}>
-                {user?.firstName || user?.username || "User"}
-              </span>
-              <UserButton
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox: "h-8 w-8 md:h-9 md:w-9",
-                  },
-                }}
-              />
-            </div>
-          ) : (
-            <>
-              {!isAuthPage && (
-                <div className="text-base">
-                  <button
-                    onClick={handleGetStarted}
-                    className="bg-purple-500 hover:bg-purple-600 transition-colors text-white px-2 py-1 rounded-lg text-[16px] md:text-lg font-medium"
-                  >
-                    Get Started
-                  </button>
-                </div>
-              )}
-            </>
-          )}
+          {/* Authentication section with consistent height */}
+          <div className="flex items-center gap-2 min-h-[36px]">
+            {!mounted || !isLoaded ? (
+              // Loading skeleton to prevent layout shift
+              <div className="flex items-center gap-2">
+                <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+              </div>
+            ) : isSignedIn ? (
+              // Signed in state
+              <div className="flex items-center gap-2">
+                <span
+                  className={`text-[15px] md:text-[17px] transition-colors duration-200 ${
+                    isDarkMode ? "text-white" : "text-black"
+                  }`}
+                >
+                  {user?.firstName || user?.username || "User"}
+                </span>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "h-8 w-8 md:h-9 md:w-9",
+                    },
+                  }}
+                />
+              </div>
+            ) : (
+              // Not signed in state
+              <>
+                {!isAuthPage && (
+                  <div className="text-base">
+                    <button
+                      onClick={handleGetStarted}
+                      className="bg-purple-500 hover:bg-purple-600 transition-colors text-white px-2 py-1 rounded-lg text-[16px] md:text-lg font-medium"
+                    >
+                      Get Started
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
 
           <ModeToggle />
         </div>
