@@ -37,7 +37,7 @@ export default function ContactPage() {
       if (result.success) {
         setSubmitStatus({
           type: "success",
-          message: "Thank you for your message! We&apos;ll get back to you soon.",
+          message: "Thank you for your message! We will get back to you soon.",
         })
         // Reset form
         const form = document.getElementById("contact-form") as HTMLFormElement
