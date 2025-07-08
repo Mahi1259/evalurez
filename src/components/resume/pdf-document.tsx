@@ -150,7 +150,6 @@ export default function PDFDocument({ resumeData }: PDFDocumentProps) {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>{resumeData.personalInfo.name}</Text>
-          {resumeData.personalInfo.title && <Text style={styles.title}>{resumeData.personalInfo.title}</Text>}
           <View style={styles.contactInfo}>
             {resumeData.personalInfo.email && (
               <View style={styles.contactItem}>

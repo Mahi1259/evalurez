@@ -30,6 +30,7 @@ export default function SkillsTab({ onPrevious, onNext }: SkillsTabProps) {
       frameworks: skills.frameworks.join(", "),
       tools: skills.tools.join(", ")
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Empty dependency array - only run once on mount
 
   // Update both local state AND Redux for live preview
@@ -87,7 +88,7 @@ export default function SkillsTab({ onPrevious, onNext }: SkillsTabProps) {
             className="font-mono"
           />
           <p className="text-xs text-muted-foreground">
-            ✓ Type freely with commas and spaces: "JavaScript, TypeScript, Python"
+            ✓ Type freely with commas and spaces: &quot;JavaScript, TypeScript, Python&quot;
           </p>
         </div>
 
@@ -102,7 +103,7 @@ export default function SkillsTab({ onPrevious, onNext }: SkillsTabProps) {
             className="font-mono"
           />
           <p className="text-xs text-muted-foreground">
-            ✓ Type freely with commas and spaces: "React, Node.js, Express.js"
+            ✓ Type freely with commas and spaces: &quot;React, Node.js, Express.js&quot;
           </p>
         </div>
 
@@ -116,7 +117,7 @@ export default function SkillsTab({ onPrevious, onNext }: SkillsTabProps) {
             placeholder="Git, Docker, AWS, MongoDB, PostgreSQL, Firebase, Jest, Postman"
             className="font-mono"
           />
-          <p className="text-xs text-muted-foreground">✓ Type freely with commas and spaces: "Git, Docker, AWS"</p>
+          <p className="text-xs text-muted-foreground">✓ Type freely with commas and spaces: &quot;Git, Docker, AWS&quot;</p>
         </div>
       </div>
       <NavigationButtons currentTab="skills" onPrevious={onPrevious} onNext={onNext} />
