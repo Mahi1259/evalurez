@@ -53,10 +53,15 @@ const menuItems = [
 
 const Sidebar = ({ show, setter }: SidebarProps) => {
   const pathname = usePathname()
-  const { theme: currentTheme } = useTheme()
-  const isDarkMode = currentTheme === "dark"
+  const { theme: currentTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [collapsed, setCollapsed] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
+
+  // Fix hydration issue
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const checkMobile = () => {
@@ -82,6 +87,10 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
       handleCloseDrawer()
     }
   }
+
+  // Use resolvedTheme for more reliable theme detection
+  // Only determine theme after component is mounted to avoid hydration mismatch
+  const isDarkMode = mounted ? resolvedTheme === "dark" || currentTheme === "dark" : false
 
   const customTheme = {
     algorithm: isDarkMode ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
@@ -144,6 +153,52 @@ const Sidebar = ({ show, setter }: SidebarProps) => {
       />
     </ConfigProvider>
   )
+
+  // Show loading state or default theme until mounted
+  if (!mounted) {
+    return (
+      <>
+        {/* Default light theme skeleton while loading */}
+        <Layout.Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          width={280}
+          collapsedWidth={80}
+          className="hidden md:block transition-all duration-300 ease-in-out overflow-auto h-screen sticky top-0 left-0 shadow-sm"
+        >
+          <div className="flex items-center justify-between p-4">
+            <div
+              className={`overflow-hidden transition-all duration-300 ${collapsed ? "w-0 opacity-0" : "w-auto opacity-100"}`}
+            ></div>
+            <button
+              onClick={handleToggle}
+              className="p-2 rounded-md transition-colors hover:bg-gray-100 text-gray-700"
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {collapsed ? <MenuUnfoldOutlined className="text-xl" /> : <MenuFoldOutlined className="text-xl" />}
+            </button>
+          </div>
+          <div className="animate-pulse">
+            {menuItems.map((item, index) => (
+              <div key={index} className="h-12 mx-4 mb-2 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </Layout.Sider>
+        <div className="fixed bottom-6 left-6 md:hidden z-50">
+          <button
+            onClick={() => setter(true)}
+            className="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500 text-white shadow-lg hover:bg-purple-600 transition-colors"
+            aria-label="Open navigation menu"
+            title="Open navigation menu"
+          >
+            <MenuUnfoldOutlined className="text-xl" />
+          </button>
+        </div>
+      </>
+    )
+  }
 
   const DesktopSidebar = (
     <ConfigProvider theme={customTheme}>
