@@ -4,9 +4,9 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Download, ArrowLeft } from "lucide-react"
+import { Download, ArrowLeft, RotateCcw } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
-import { setActiveTab, selectTemplate, resetToTemplateSelection, loadResumeData } from "@/lib/store"
+import { setActiveTab, selectTemplate, resetToTemplateSelection, loadResumeData, resetToInitialData } from "@/lib/store"
 import PersonalInfoTab from "@/components/resume/personal-info-tab"
 import EducationTab from "@/components/resume/education-tab"
 import ExperienceTab from "@/components/resume/experience-tab"
@@ -59,6 +59,12 @@ function ResumeBuilderContent() {
     dispatch(resetToTemplateSelection())
   }
 
+  const handleResetData = () => {
+    if (confirm("Are you sure you want to reset all data to the initial template? This action cannot be undone.")) {
+      dispatch(resetToInitialData())
+    }
+  }
+
   const { generatePDF } = PDFGenerator({ resumeData, onGenerate: setIsGenerating })
 
   // Show template selection if no template is selected
@@ -88,6 +94,17 @@ function ResumeBuilderContent() {
             </div>
             <h1 className="text-3xl font-bold mb-2">Resume Builder</h1>
             <p className="text-muted-foreground">Create and customize your professional resume</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleResetData}
+              className="text-muted-foreground hover:text-foreground bg-transparent"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Reset to Template
+            </Button>
           </div>
         </div>
 

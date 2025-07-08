@@ -93,6 +93,38 @@ const saveToLocalStorage = (data: ResumeData) => {
   }
 }
 
+// Save editing mode state to localStorage
+const saveEditingModeToLocalStorage = (isInEditingMode: boolean, selectedTemplate: string) => {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(
+        "resumeEditingMode",
+        JSON.stringify({
+          isInEditingMode,
+          selectedTemplate,
+        }),
+      )
+    } catch (error) {
+      console.error("Error saving editing mode to localStorage:", error)
+    }
+  }
+}
+
+// Load editing mode state from localStorage
+const loadEditingModeFromLocalStorage = () => {
+  if (typeof window !== "undefined") {
+    try {
+      const savedEditingMode = localStorage.getItem("resumeEditingMode")
+      if (savedEditingMode) {
+        return JSON.parse(savedEditingMode)
+      }
+    } catch (error) {
+      console.error("Error loading editing mode from localStorage:", error)
+    }
+  }
+  return { isInEditingMode: false, selectedTemplate: "" }
+}
+
 // Load data from localStorage
 const loadFromLocalStorage = (): ResumeData => {
   if (typeof window !== "undefined") {
@@ -119,19 +151,44 @@ const resumeSlice = createSlice({
   },
   reducers: {
     loadResumeData: (state) => {
-      state.data = loadFromLocalStorage()
+      const loadedData = loadFromLocalStorage()
+      const editingModeState = loadEditingModeFromLocalStorage()
+
+      state.data = loadedData
       state.isLoaded = true
+
+      // ONLY restore editing mode if the user was actually in editing mode
+      // Don't automatically enter editing mode just because data exists
+      if (editingModeState.isInEditingMode) {
+        state.showTemplateSelection = false
+        state.selectedTemplate = editingModeState.selectedTemplate || "professional"
+      } else {
+        // If not in editing mode, always show template selection
+        // Even if data exists, let user choose to enter editing mode again
+        state.showTemplateSelection = true
+        state.selectedTemplate = ""
+      }
     },
     selectTemplate: (state, action: PayloadAction<string>) => {
       state.selectedTemplate = action.payload
       state.showTemplateSelection = false
+      // Save editing mode state when template is selected
+      saveEditingModeToLocalStorage(true, action.payload)
     },
     resetToTemplateSelection: (state) => {
       state.showTemplateSelection = true
       state.selectedTemplate = ""
       state.activeTab = "personal-info"
-      // Reset data to initial state
+      // Clear editing mode when going back to template selection
+      saveEditingModeToLocalStorage(false, "")
+    },
+    resetToInitialData: (state) => {
+      // Reset data to initial dummy data
       state.data = initialResumeData
+      state.activeTab = "personal-info"
+      // Save the reset data to localStorage
+      saveToLocalStorage(initialResumeData)
+      // Keep editing mode active (don't change template selection state)
     },
     updatePersonalInfo: (state, action: PayloadAction<{ field: string; value: string }>) => {
       const { field, value } = action.payload
@@ -139,11 +196,11 @@ const resumeSlice = createSlice({
         ...state.data.personalInfo,
         [field]: value,
       }
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     updateSummary: (state, action: PayloadAction<string>) => {
       state.data.summary = action.payload
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     setActiveTab: (state, action: PayloadAction<string>) => {
       state.activeTab = action.payload
@@ -156,7 +213,7 @@ const resumeSlice = createSlice({
         startDate: "",
         endDate: "",
       })
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     updateEducation: (state, action: PayloadAction<{ index: number; field: string; value: string }>) => {
       const { index, field, value } = action.payload
@@ -165,12 +222,12 @@ const resumeSlice = createSlice({
           ...state.data.education[index],
           [field]: value,
         }
-        saveToLocalStorage(state.data) // Add this line
+        saveToLocalStorage(state.data)
       }
     },
     removeEducation: (state, action: PayloadAction<number>) => {
       state.data.education = state.data.education.filter((_, i) => i !== action.payload)
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     addExperience: (state) => {
       state.data.experience.push({
@@ -181,7 +238,7 @@ const resumeSlice = createSlice({
         endDate: "",
         responsibilities: [""],
       })
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     updateExperience: (state, action: PayloadAction<{ index: number; field: string; value: string | string[] }>) => {
       const { index, field, value } = action.payload
@@ -190,12 +247,12 @@ const resumeSlice = createSlice({
           ...state.data.experience[index],
           [field]: value,
         }
-        saveToLocalStorage(state.data) // Add this line
+        saveToLocalStorage(state.data)
       }
     },
     removeExperience: (state, action: PayloadAction<number>) => {
       state.data.experience = state.data.experience.filter((_, i) => i !== action.payload)
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     addProject: (state) => {
       state.data.projects.push({
@@ -203,7 +260,7 @@ const resumeSlice = createSlice({
         date: "",
         description: "",
       })
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     updateProject: (state, action: PayloadAction<{ index: number; field: string; value: string }>) => {
       const { index, field, value } = action.payload
@@ -212,12 +269,12 @@ const resumeSlice = createSlice({
           ...state.data.projects[index],
           [field]: value,
         }
-        saveToLocalStorage(state.data) // Add this line
+        saveToLocalStorage(state.data)
       }
     },
     removeProject: (state, action: PayloadAction<number>) => {
       state.data.projects = state.data.projects.filter((_, i) => i !== action.payload)
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     updateSkills: (state, action: PayloadAction<{ category: string; skills: string[] }>) => {
       const { category, skills } = action.payload
@@ -225,30 +282,31 @@ const resumeSlice = createSlice({
         ...state.data.skills,
         [category]: skills,
       }
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     addAchievement: (state) => {
       state.data.achievements.push("")
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
     updateAchievement: (state, action: PayloadAction<{ index: number; value: string }>) => {
       const { index, value } = action.payload
       if (state.data.achievements[index] !== undefined) {
         state.data.achievements[index] = value
-        saveToLocalStorage(state.data) // Add this line
+        saveToLocalStorage(state.data)
       }
     },
     removeAchievement: (state, action: PayloadAction<number>) => {
       state.data.achievements = state.data.achievements.filter((_, i) => i !== action.payload)
-      saveToLocalStorage(state.data) // Add this line
+      saveToLocalStorage(state.data)
     },
   },
 })
 
 export const {
-  loadResumeData, // Add this line
+  loadResumeData,
   selectTemplate,
   resetToTemplateSelection,
+  resetToInitialData,
   updatePersonalInfo,
   updateSummary,
   setActiveTab,
