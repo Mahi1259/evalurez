@@ -37,7 +37,7 @@ export default function ContactPage() {
       if (result.success) {
         setSubmitStatus({
           type: "success",
-          message: "Thank you for your message! We'll get back to you soon.",
+          message: "Thank you for your message! We&apos;ll get back to you soon.",
         })
         // Reset form
         const form = document.getElementById("contact-form") as HTMLFormElement
@@ -63,7 +63,7 @@ export default function ContactPage() {
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
         <p className="text-muted-foreground">
-          Have a question or feedback? We'd love to hear from you. Send us a message and we'll respond as soon as
+          Have a question or feedback? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as
           possible.
         </p>
       </div>
