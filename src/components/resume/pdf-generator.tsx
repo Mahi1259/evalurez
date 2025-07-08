@@ -3,11 +3,6 @@
 import { useCallback } from "react"
 import type { ResumeData } from "@/types/resume"
 
-interface ContactLink {
-  text: string
-  url: string | null
-}
-
 interface PDFGeneratorProps {
   resumeData: ResumeData
   onGenerate: (isGenerating: boolean) => void
@@ -29,7 +24,7 @@ export default function PDFGenerator({ resumeData, onGenerate }: PDFGeneratorPro
 
       // Helper function to add section header
       const addSectionHeader = (title: string) => {
-        yPosition += 4 // Reduced from 5
+        yPosition += 4
         pdf.setFontSize(11)
         pdf.setFont("times", "bold")
         pdf.text(title.toUpperCase(), margin, yPosition)
@@ -37,65 +32,173 @@ export default function PDFGenerator({ resumeData, onGenerate }: PDFGeneratorPro
         yPosition += 7
       }
 
-      // Header - Name only (removed professional title)
+      // FIXED: Header - Name with overflow handling
       pdf.setFontSize(20)
       pdf.setFont("times", "bold")
-      pdf.text(resumeData.personalInfo.name.toUpperCase(), pageWidth / 2, yPosition, { align: "center" })
-      yPosition += 10
 
-      // Contact Info with clickable links
-      const contactInfo: string[] = []
-      const contactLinks: ContactLink[] = []
+      const nameText = resumeData.personalInfo.name.toUpperCase()
+      const nameWidth = pdf.getTextWidth(nameText)
+
+      if (nameWidth <= contentWidth) {
+        // Name fits on one line
+        pdf.text(nameText, pageWidth / 2, yPosition, { align: "center" })
+        yPosition += 10
+      } else {
+        // Name is too long - split it properly
+        const nameWords = nameText.split(" ")
+        const nameLines: string[] = []
+        let currentLine = ""
+
+        nameWords.forEach((word) => {
+          const testLine = currentLine ? `${currentLine} ${word}` : word
+          if (pdf.getTextWidth(testLine) <= contentWidth) {
+            currentLine = testLine
+          } else {
+            if (currentLine) {
+              nameLines.push(currentLine)
+              currentLine = word
+            } else {
+              // Single word is too long - truncate it
+              nameLines.push(word.substring(0, Math.floor(contentWidth / pdf.getTextWidth("M")) - 3) + "...")
+            }
+          }
+        })
+        if (currentLine) {
+          nameLines.push(currentLine)
+        }
+
+        // Render name lines centered
+        nameLines.forEach((line) => {
+          pdf.text(line, pageWidth / 2, yPosition, { align: "center" })
+          yPosition += 6
+        })
+        yPosition += 4
+      }
+
+      // Contact Info - using the fixed horizontal formatting
+      const contactItems: Array<{ text: string; url?: string }> = []
 
       if (resumeData.personalInfo.email) {
-        contactInfo.push(resumeData.personalInfo.email)
-        contactLinks.push({ text: resumeData.personalInfo.email, url: `mailto:${resumeData.personalInfo.email}` })
+        contactItems.push({
+          text: resumeData.personalInfo.email,
+          url: `mailto:${resumeData.personalInfo.email}`,
+        })
       }
       if (resumeData.personalInfo.phone) {
-        contactInfo.push(resumeData.personalInfo.phone)
-        contactLinks.push({ text: resumeData.personalInfo.phone, url: null })
+        contactItems.push({ text: resumeData.personalInfo.phone })
       }
       if (resumeData.personalInfo.location) {
-        contactInfo.push(resumeData.personalInfo.location)
-        contactLinks.push({ text: resumeData.personalInfo.location, url: null })
+        contactItems.push({ text: resumeData.personalInfo.location })
       }
       if (resumeData.personalInfo.linkedin) {
-        contactInfo.push("LinkedIn")
-        contactLinks.push({ text: "LinkedIn", url: resumeData.personalInfo.linkedin })
+        contactItems.push({
+          text: "LinkedIn",
+          url: resumeData.personalInfo.linkedin.startsWith("http")
+            ? resumeData.personalInfo.linkedin
+            : `https://${resumeData.personalInfo.linkedin}`,
+        })
       }
       if (resumeData.personalInfo.github) {
-        contactInfo.push("GitHub")
-        contactLinks.push({ text: "GitHub", url: resumeData.personalInfo.github })
+        contactItems.push({
+          text: "GitHub",
+          url: resumeData.personalInfo.github.startsWith("http")
+            ? resumeData.personalInfo.github
+            : `https://${resumeData.personalInfo.github}`,
+        })
+      }
+      if (resumeData.personalInfo.portfolio) {
+        contactItems.push({
+          text: "Portfolio",
+          url: resumeData.personalInfo.portfolio.startsWith("http")
+            ? resumeData.personalInfo.portfolio
+            : `https://${resumeData.personalInfo.portfolio}`,
+        })
       }
 
-      // Add contact info with links
+      // Contact info horizontal formatting
       pdf.setFontSize(10)
       pdf.setFont("times", "normal")
-      const contactLine = contactInfo.join("  |  ")
 
-      // Calculate positions for clickable areas
-      const contactY = yPosition
-      let currentX = (pageWidth - pdf.getTextWidth(contactLine)) / 2
+      const contactTexts = contactItems.map((item) => item.text)
+      const fullContactLine = contactTexts.join(" | ")
 
-      contactInfo.forEach((item, index) => {
-        const link = contactLinks[index]
-        const textWidth = pdf.getTextWidth(item)
+      if (pdf.getTextWidth(fullContactLine) <= contentWidth) {
+        // Single line - add clickable links
+        const lineWidth = pdf.getTextWidth(fullContactLine)
+        const startX = (pageWidth - lineWidth) / 2
+        let currentX = startX
 
-        if (link && link.url) {
-          // Add clickable link
-          pdf.textWithLink(item, currentX, contactY, { url: link.url })
-        } else {
-          pdf.text(item, currentX, contactY)
+        contactItems.forEach((item, index) => {
+          const itemWidth = pdf.getTextWidth(item.text)
+
+          if (item.url) {
+            pdf.textWithLink(item.text, currentX, yPosition, { url: item.url })
+          } else {
+            pdf.text(item.text, currentX, yPosition)
+          }
+
+          currentX += itemWidth
+
+          if (index < contactItems.length - 1) {
+            const separatorText = " | "
+            pdf.text(separatorText, currentX, yPosition)
+            currentX += pdf.getTextWidth(separatorText)
+          }
+        })
+        yPosition += 6
+      } else {
+        // Multiple lines - split text properly but keep horizontal format
+        const words = fullContactLine.split(" ")
+        const lines: string[] = []
+        let currentLine = ""
+
+        words.forEach((word) => {
+          const testLine = currentLine ? `${currentLine} ${word}` : word
+          if (pdf.getTextWidth(testLine) <= contentWidth) {
+            currentLine = testLine
+          } else {
+            if (currentLine) {
+              lines.push(currentLine)
+              currentLine = word
+            } else {
+              lines.push(word)
+            }
+          }
+        })
+        if (currentLine) {
+          lines.push(currentLine)
         }
 
-        currentX += textWidth
-        if (index < contactInfo.length - 1) {
-          pdf.text("  |  ", currentX, contactY)
-          currentX += pdf.getTextWidth("  |  ")
-        }
-      })
+        lines.forEach((line) => {
+          const lineWidth = pdf.getTextWidth(line)
+          const startX = (pageWidth - lineWidth) / 2
+          let currentX = startX
 
-      yPosition += 10
+          const lineParts = line.split(" | ")
+
+          lineParts.forEach((part, index) => {
+            const partWidth = pdf.getTextWidth(part)
+            const matchingItem = contactItems.find((item) => item.text === part)
+
+            if (matchingItem && matchingItem.url) {
+              pdf.textWithLink(part, currentX, yPosition, { url: matchingItem.url })
+            } else {
+              pdf.text(part, currentX, yPosition)
+            }
+
+            currentX += partWidth
+
+            if (index < lineParts.length - 1) {
+              const separatorText = " | "
+              pdf.text(separatorText, currentX, yPosition)
+              currentX += pdf.getTextWidth(separatorText)
+            }
+          })
+
+          yPosition += 4
+        })
+        yPosition += 2
+      }
 
       // Summary
       if (resumeData.summary) {
@@ -127,20 +230,18 @@ export default function PDFGenerator({ resumeData, onGenerate }: PDFGeneratorPro
           pdf.setFont("times", "bold")
           pdf.text(edu.institution, margin, yPosition)
 
-          // Smaller date font
           pdf.setFontSize(9)
           pdf.setFont("times", "normal")
-          pdf.text(`${edu.startDate} - ${edu.endDate}`, pageWidth - margin, yPosition, { align: "right" })
+          pdf.text(`${edu.startDate} -- ${edu.endDate}`, pageWidth - margin, yPosition, { align: "right" })
           yPosition += 4
 
           pdf.setFont("times", "italic")
           pdf.setFontSize(10)
           pdf.text(edu.degree, margin, yPosition)
 
-          // Smaller location text
           if (edu.location) {
             pdf.setFont("times", "normal")
-            pdf.setFontSize(8) // Reduced from 9
+            pdf.setFontSize(8)
             pdf.text(edu.location, pageWidth - margin, yPosition, { align: "right" })
           }
           yPosition += 7
@@ -160,15 +261,20 @@ export default function PDFGenerator({ resumeData, onGenerate }: PDFGeneratorPro
           pdf.setFont("times", "bold")
           pdf.text(exp.company, margin, yPosition)
 
-          // Smaller date font
           pdf.setFontSize(9)
           pdf.setFont("times", "normal")
-          pdf.text(`${exp.startDate} - ${exp.endDate}`, pageWidth - margin, yPosition, { align: "right" })
+          pdf.text(`${exp.startDate} -- ${exp.endDate}`, pageWidth - margin, yPosition, { align: "right" })
           yPosition += 4
 
           pdf.setFont("times", "italic")
           pdf.setFontSize(10)
           pdf.text(exp.position, margin, yPosition)
+
+          if (exp.location) {
+            pdf.setFont("times", "normal")
+            pdf.setFontSize(8)
+            pdf.text(exp.location, pageWidth - margin, yPosition, { align: "right" })
+          }
           yPosition += 5
 
           exp.responsibilities.forEach((resp) => {
@@ -227,7 +333,6 @@ export default function PDFGenerator({ resumeData, onGenerate }: PDFGeneratorPro
             if (lineIndex < lines.length - 1) yPosition += 3.5
           })
 
-          // Add more space between projects
           if (index < resumeData.projects.length - 1) {
             yPosition += 8
           } else {

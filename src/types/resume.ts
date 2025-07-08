@@ -1,6 +1,5 @@
 export interface PersonalInfo {
   name: string
-  title: string
   email: string
   phone: string
   location: string
@@ -46,5 +45,5 @@ export interface ResumeData {
   projects: Project[]
   skills: Skills
   achievements: string[]
-  summary: string // Added this missing property
+  summary: string
 }

@@ -6,67 +6,6 @@ interface ResumePreviewProps {
 }
 
 export default function ResumePreview({ resumeData }: ResumePreviewProps) {
-  // Create contact info array with separators
-  const contactItems = []
-
-  if (resumeData.personalInfo.email) {
-    contactItems.push(
-      <a key="email" href={`mailto:${resumeData.personalInfo.email}`} className={styles.contactLink}>
-        {resumeData.personalInfo.email}
-      </a>,
-    )
-  }
-
-  if (resumeData.personalInfo.phone) {
-    contactItems.push(<span key="phone">{resumeData.personalInfo.phone}</span>)
-  }
-
-  if (resumeData.personalInfo.location) {
-    contactItems.push(<span key="location">{resumeData.personalInfo.location}</span>)
-  }
-
-  if (resumeData.personalInfo.linkedin) {
-    contactItems.push(
-      <a
-        key="linkedin"
-        href={resumeData.personalInfo.linkedin}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.contactLink}
-      >
-        LinkedIn
-      </a>,
-    )
-  }
-
-  if (resumeData.personalInfo.github) {
-    contactItems.push(
-      <a
-        key="github"
-        href={resumeData.personalInfo.github}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.contactLink}
-      >
-        GitHub
-      </a>,
-    )
-  }
-
-  if (resumeData.personalInfo.portfolio) {
-    contactItems.push(
-      <a
-        key="portfolio"
-        href={resumeData.personalInfo.portfolio}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.contactLink}
-      >
-        Portfolio
-      </a>,
-    )
-  }
-
   return (
     <div className="w-full h-full overflow-auto bg-gray-100 p-4">
       {/* Single Page */}
@@ -74,13 +13,45 @@ export default function ResumePreview({ resumeData }: ResumePreviewProps) {
         {/* Header - Name only */}
         <div className={styles.header}>
           <h1 className={styles.name}>{resumeData.personalInfo.name}</h1>
+          {/* FIXED: Contact info formatting to match PDF exactly */}
           <div className={styles.contactInfo}>
-            {contactItems.map((item, index) => (
-              <span key={index}>
-                {item}
-                {index < contactItems.length - 1 && <span className={styles.separator}> | </span>}
-              </span>
-            ))}
+            {resumeData.personalInfo.email && (
+              <a href={`mailto:${resumeData.personalInfo.email}`} className={styles.contactLink}>
+                {resumeData.personalInfo.email}
+              </a>
+            )}
+            {resumeData.personalInfo.phone && <span>{resumeData.personalInfo.phone}</span>}
+            {resumeData.personalInfo.location && <span>{resumeData.personalInfo.location}</span>}
+            {resumeData.personalInfo.linkedin && (
+              <a
+                href={resumeData.personalInfo.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.contactLink}
+              >
+                LinkedIn
+              </a>
+            )}
+            {resumeData.personalInfo.github && (
+              <a
+                href={resumeData.personalInfo.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.contactLink}
+              >
+                GitHub
+              </a>
+            )}
+            {resumeData.personalInfo.portfolio && (
+              <a
+                href={resumeData.personalInfo.portfolio}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.contactLink}
+              >
+                Portfolio
+              </a>
+            )}
           </div>
         </div>
 
@@ -130,6 +101,8 @@ export default function ResumePreview({ resumeData }: ResumePreviewProps) {
                     <p className={styles.dateRange}>
                       {exp.startDate} -- {exp.endDate}
                     </p>
+                    {/* FIXED: Show location for experience if it exists */}
+                    {exp.location && <p className={styles.location}>{exp.location}</p>}
                   </div>
                 </div>
                 <ul className={styles.responsibilityList}>

@@ -4,7 +4,6 @@ import type { ResumeData } from "@/types/resume"
 const initialResumeData: ResumeData = {
   personalInfo: {
     name: "John Smith",
-    title: "Full Stack Developer",
     email: "john.smith@email.com",
     phone: "(555) 123-4567",
     location: "New York, NY",
@@ -27,7 +26,7 @@ const initialResumeData: ResumeData = {
     {
       company: "Tech Solutions Inc.",
       position: "Full Stack Developer",
-      location: "",
+      location: "San Francisco, CA", // Added location
       startDate: "June 2023",
       endDate: "Present",
       responsibilities: [
@@ -39,7 +38,7 @@ const initialResumeData: ResumeData = {
     {
       company: "Digital Innovations LLC",
       position: "Software Developer Intern",
-      location: "",
+      location: "Austin, TX", // Added location
       startDate: "Jan 2022",
       endDate: "May 2023",
       responsibilities: [
@@ -143,9 +142,9 @@ const loadFromLocalStorage = (): ResumeData => {
 const resumeSlice = createSlice({
   name: "resume",
   initialState: {
-    data: initialResumeData, // Will be replaced by loadResumeData action
+    data: initialResumeData,
     activeTab: "personal-info",
-    isLoaded: false, // Changed to false so we can load data
+    isLoaded: false,
     selectedTemplate: "",
     showTemplateSelection: true,
   },
@@ -154,17 +153,20 @@ const resumeSlice = createSlice({
       const loadedData = loadFromLocalStorage()
       const editingModeState = loadEditingModeFromLocalStorage()
 
+      // Sync summary fields if they exist
+      if (loadedData.personalInfo.summary && !loadedData.summary) {
+        loadedData.summary = loadedData.personalInfo.summary
+      } else if (loadedData.summary && !loadedData.personalInfo.summary) {
+        loadedData.personalInfo.summary = loadedData.summary
+      }
+
       state.data = loadedData
       state.isLoaded = true
 
-      // ONLY restore editing mode if the user was actually in editing mode
-      // Don't automatically enter editing mode just because data exists
       if (editingModeState.isInEditingMode) {
         state.showTemplateSelection = false
         state.selectedTemplate = editingModeState.selectedTemplate || "professional"
       } else {
-        // If not in editing mode, always show template selection
-        // Even if data exists, let user choose to enter editing mode again
         state.showTemplateSelection = true
         state.selectedTemplate = ""
       }
@@ -172,23 +174,21 @@ const resumeSlice = createSlice({
     selectTemplate: (state, action: PayloadAction<string>) => {
       state.selectedTemplate = action.payload
       state.showTemplateSelection = false
-      // Save editing mode state when template is selected
       saveEditingModeToLocalStorage(true, action.payload)
     },
     resetToTemplateSelection: (state) => {
       state.showTemplateSelection = true
       state.selectedTemplate = ""
       state.activeTab = "personal-info"
-      // Clear editing mode when going back to template selection
       saveEditingModeToLocalStorage(false, "")
     },
     resetToInitialData: (state) => {
-      // Reset data to initial dummy data
-      state.data = initialResumeData
+      const resetData = { ...initialResumeData }
+      resetData.summary = resetData.personalInfo.summary
+
+      state.data = resetData
       state.activeTab = "personal-info"
-      // Save the reset data to localStorage
-      saveToLocalStorage(initialResumeData)
-      // Keep editing mode active (don't change template selection state)
+      saveToLocalStorage(resetData)
     },
     updatePersonalInfo: (state, action: PayloadAction<{ field: string; value: string }>) => {
       const { field, value } = action.payload
@@ -196,6 +196,11 @@ const resumeSlice = createSlice({
         ...state.data.personalInfo,
         [field]: value,
       }
+
+      if (field === "summary") {
+        state.data.summary = value
+      }
+
       saveToLocalStorage(state.data)
     },
     updateSummary: (state, action: PayloadAction<string>) => {
