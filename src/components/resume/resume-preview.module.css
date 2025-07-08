@@ -88,6 +88,7 @@
   font-size: 11px;
   line-height: 1.4;
   text-align: justify;
+  white-space: pre-line; /* Preserve line breaks and spacing */
 }
 
 .subsection {
@@ -148,6 +149,10 @@
   margin-bottom: 3px;
 }
 
+.responsibilityItem span:last-child {
+  white-space: pre-line; /* Preserve line breaks in responsibility text */
+}
+
 .bullet {
   width: 4px;
   height: 4px;
@@ -191,6 +196,7 @@
   font-size: 10px;
   line-height: 1.4;
   text-align: justify;
+  white-space: pre-line; /* Preserve line breaks and spacing */
 }
 
 .skillsContainer {
@@ -223,6 +229,16 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 4px;
+}
+
+.achievementItem span:last-child {
+  white-space: pre-line; /* Preserve line breaks in achievement text */
+}
+
+/* Add spacing for paragraphs */
+.textWithSpacing {
+  white-space: pre-line;
+  line-height: 1.5;
 }
 
 /* Print styles */

@@ -13,7 +13,7 @@ export default function ResumePreview({ resumeData }: ResumePreviewProps) {
         {/* Header - Name only */}
         <div className={styles.header}>
           <h1 className={styles.name}>{resumeData.personalInfo.name}</h1>
-          {/* FIXED: Contact info formatting to match PDF exactly */}
+          {/* Contact info formatting to match PDF exactly */}
           <div className={styles.contactInfo}>
             {resumeData.personalInfo.email && (
               <a href={`mailto:${resumeData.personalInfo.email}`} className={styles.contactLink}>
@@ -59,7 +59,7 @@ export default function ResumePreview({ resumeData }: ResumePreviewProps) {
         {resumeData.personalInfo.summary && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>SUMMARY</h2>
-            <p className={styles.summaryText}>{resumeData.personalInfo.summary}</p>
+            <p className={`${styles.summaryText} ${styles.textWithSpacing}`}>{resumeData.personalInfo.summary}</p>
           </section>
         )}
 
@@ -101,7 +101,6 @@ export default function ResumePreview({ resumeData }: ResumePreviewProps) {
                     <p className={styles.dateRange}>
                       {exp.startDate} -- {exp.endDate}
                     </p>
-                    {/* FIXED: Show location for experience if it exists */}
                     {exp.location && <p className={styles.location}>{exp.location}</p>}
                   </div>
                 </div>
@@ -109,7 +108,7 @@ export default function ResumePreview({ resumeData }: ResumePreviewProps) {
                   {exp.responsibilities.map((resp, respIndex) => (
                     <li key={respIndex} className={styles.responsibilityItem}>
                       <span className={styles.bullet}></span>
-                      <span>{resp}</span>
+                      <span className={styles.textWithSpacing}>{resp}</span>
                     </li>
                   ))}
                 </ul>
@@ -130,29 +129,40 @@ export default function ResumePreview({ resumeData }: ResumePreviewProps) {
                 </div>
                 <div className={styles.projectDescription}>
                   <span className={styles.bullet}></span>
-                  <p className={styles.descriptionText}>{project.description}</p>
+                  <p className={`${styles.descriptionText} ${styles.textWithSpacing}`}>{project.description}</p>
                 </div>
               </div>
             ))}
           </section>
         )}
 
-        {/* Technical Skills */}
+        {/* FIXED: Technical Skills - Now properly displays updated skills */}
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>TECHNICAL SKILLS</h2>
           <div className={styles.skillsContainer}>
-            <div className={styles.skillRow}>
-              <span className={styles.skillLabel}>Languages:</span>
-              <span className={styles.skillText}>{resumeData.skills.languages.join(", ")}</span>
-            </div>
-            <div className={styles.skillRow}>
-              <span className={styles.skillLabel}>Frameworks/Libraries:</span>
-              <span className={styles.skillText}>{resumeData.skills.frameworks.join(", ")}</span>
-            </div>
-            <div className={styles.skillRow}>
-              <span className={styles.skillLabel}>Tools & Technologies:</span>
-              <span className={styles.skillText}>{resumeData.skills.tools.join(", ")}</span>
-            </div>
+            {/* FIXED: Languages */}
+            {resumeData.skills.languages.length > 0 && (
+              <div className={styles.skillRow}>
+                <span className={styles.skillLabel}>Languages:</span>
+                <span className={styles.skillText}>{resumeData.skills.languages.join(", ")}</span>
+              </div>
+            )}
+
+            {/* FIXED: Frameworks */}
+            {resumeData.skills.frameworks.length > 0 && (
+              <div className={styles.skillRow}>
+                <span className={styles.skillLabel}>Frameworks/Libraries:</span>
+                <span className={styles.skillText}>{resumeData.skills.frameworks.join(", ")}</span>
+              </div>
+            )}
+
+            {/* FIXED: Tools */}
+            {resumeData.skills.tools.length > 0 && (
+              <div className={styles.skillRow}>
+                <span className={styles.skillLabel}>Tools & Technologies:</span>
+                <span className={styles.skillText}>{resumeData.skills.tools.join(", ")}</span>
+              </div>
+            )}
           </div>
         </section>
 
@@ -164,7 +174,7 @@ export default function ResumePreview({ resumeData }: ResumePreviewProps) {
               {resumeData.achievements.map((achievement, index) => (
                 <li key={index} className={styles.achievementItem}>
                   <span className={styles.bullet}></span>
-                  <span>{achievement}</span>
+                  <span className={styles.textWithSpacing}>{achievement}</span>
                 </li>
               ))}
             </ul>
