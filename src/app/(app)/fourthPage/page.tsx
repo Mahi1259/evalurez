@@ -1,5 +1,6 @@
-"use client";
-import { motion } from "framer-motion";
+"use client"
+
+import { motion } from "framer-motion"
 
 const FourthPage = () => {
   return (
@@ -19,21 +20,12 @@ const FourthPage = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-lg text-gray-700 dark:text-gray-300 mb-8"
         >
-          Join Evalurez today and unlock the power of AI to transform your
-          resume and land your dream job.
+          Join Evalurez today and unlock the power of professional resume building and AI-powered analysis to transform
+          your career prospects and land your dream job.
         </motion.p>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <button className="px-6 py-3 bg-purple-800 hover:bg-purple-900 text-white rounded-md font-medium transition-colors">
-            Watch Video
-          </button>
-        </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FourthPage;
+export default FourthPage

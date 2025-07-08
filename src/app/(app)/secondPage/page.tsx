@@ -1,5 +1,6 @@
-"use client";
-import { motion } from "framer-motion";
+"use client"
+
+import { motion } from "framer-motion"
 
 const BarChart = () => (
   <svg
@@ -17,7 +18,7 @@ const BarChart = () => (
     <line x1="18" y1="20" x2="18" y2="4"></line>
     <line x1="6" y1="20" x2="6" y2="16"></line>
   </svg>
-);
+)
 
 const FileText = () => (
   <svg
@@ -37,7 +38,7 @@ const FileText = () => (
     <line x1="16" y1="17" x2="8" y2="17"></line>
     <line x1="10" y1="9" x2="8" y2="9"></line>
   </svg>
-);
+)
 
 const CheckCircle = () => (
   <svg
@@ -54,7 +55,7 @@ const CheckCircle = () => (
     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
     <polyline points="22 4 12 14.01 9 11.01"></polyline>
   </svg>
-);
+)
 
 const Star = () => (
   <svg
@@ -70,7 +71,7 @@ const Star = () => (
   >
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
   </svg>
-);
+)
 
 const Users = () => (
   <svg
@@ -89,45 +90,45 @@ const Users = () => (
     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
   </svg>
-);
+)
 
 const features = [
   {
     title: "AI-Powered Resume Analysis",
     description:
-      "Our advanced AI algorithms analyze CVs instantly, matching them with job descriptions to provide personalized scores.",
+      "Our advanced AI algorithms analyze CVs instantly, matching them with job descriptions to provide personalized scores and detailed feedback.",
     icon: <BarChart />,
     color: "bg-blue-500",
   },
   {
-    title: "AI Resume Builder",
+    title: "Professional Resume Builder",
     description:
-      "Create professional resumes from scratch with our AI-powered builder that generates tailored content based on your experience and target roles.",
+      "Create professional resumes with our intuitive builder that lets you customize every detail, choose from professional templates, and export in PDF format.",
     icon: <FileText />,
     color: "bg-purple-600",
   },
   {
     title: "Actionable Insights",
     description:
-      "Receive valuable feedback and suggestions to improve your resume, helping you tailor it to specific job requirements.",
+      "Receive valuable feedback and suggestions to improve your resume, helping you tailor it to specific job requirements and industry standards.",
     icon: <CheckCircle />,
     color: "bg-green-500",
   },
   {
     title: "Efficient Job Matching",
     description:
-      "Increase your chances of landing your ideal job by ensuring your resume is perfectly aligned with employer expectations.",
+      "Increase your chances of landing your ideal job by ensuring your resume is perfectly aligned with employer expectations and ATS systems.",
     icon: <Star />,
     color: "bg-amber-500",
   },
   {
     title: "Community Engagement",
     description:
-      "Join a vibrant community of job seekers leveraging transformative technology to enhance their career prospects.",
+      "Join a vibrant community of job seekers leveraging transformative technology to enhance their career prospects and share experiences.",
     icon: <Users />,
     color: "bg-red-500",
   },
-];
+]
 
 const SecondPage = () => {
   return (
@@ -147,11 +148,9 @@ const SecondPage = () => {
             </span>
           </motion.h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Discover how Evalurez can transform your job search experience with
-            our powerful features
+            Discover how Evalurez can transform your job search experience with our powerful features
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <motion.div
@@ -171,16 +170,14 @@ const SecondPage = () => {
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-800 dark:group-hover:text-purple-400 transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {feature.description}
-                </p>
+                <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SecondPage;
+export default SecondPage

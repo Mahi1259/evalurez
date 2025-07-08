@@ -1,5 +1,6 @@
-"use client";
-import { motion } from "framer-motion";
+"use client"
+
+import { motion } from "framer-motion"
 
 const ThirdPage = () => {
   return (
@@ -14,16 +15,15 @@ const ThirdPage = () => {
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-800 to-purple-500 dark:from-purple-400 dark:to-purple-300">
-              Powerful AI Tools for Your Career
+              Powerful Tools for Your Career
             </span>
           </h2>
           <p className="text-lg text-gray-700 dark:text-gray-300 max-w-4xl mx-auto">
-            Evalurez offers two complementary AI-powered solutions to help you
-            land your dream job
+            Evalurez offers two complementary solutions to help you land your dream job
           </p>
         </motion.div>
 
-        {/* AI Resume Builder Section */}
+        {/* Resume Builder Section */}
         <div className="mb-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -55,21 +55,19 @@ const ThirdPage = () => {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-purple-800 dark:text-purple-400">
-                  AI Resume Builder
+                  Professional Resume Builder
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300 mb-6">
-                  Create professional, ATS-friendly resumes from scratch with
-                  our intelligent AI. Simply input your experience and skills,
-                  and our system will generate tailored content optimized for
-                  your target roles.
+                  Create professional, ATS-friendly resumes with our intuitive builder. Take complete control over every
+                  section, customize the layout to match your style, and build a resume that truly represents your
+                  unique experience and skills.
                 </p>
-
                 <div className="space-y-4 mb-8">
                   {[
-                    "Generate professional resume content based on your experience",
-                    "Choose from multiple professionally designed templates",
-                    "Customize sections to highlight your unique strengths",
-                    "Export in multiple formats (PDF, DOCX) ready for submission",
+                    "Step-by-step guided resume creation process",
+                    "Professional templates designed for modern job markets",
+                    "Complete customization control over all sections and content",
+                    "Export in PDF format ready for submission",
                   ].map((feature, index) => (
                     <div key={index} className="flex items-start">
                       <div className="flex-shrink-0 h-6 w-6 text-green-500 dark:text-green-400">
@@ -88,19 +86,12 @@ const ThirdPage = () => {
                           <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
                       </div>
-                      <p className="ml-3 text-gray-700 dark:text-gray-300">
-                        {feature}
-                      </p>
+                      <p className="ml-3 text-gray-700 dark:text-gray-300">{feature}</p>
                     </div>
                   ))}
                 </div>
-
-                <button className="px-6 py-3 bg-purple-800 hover:bg-purple-900 text-white rounded-md font-medium transition-colors">
-                  Build Your Resume
-                </button>
               </div>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -117,10 +108,7 @@ const ThirdPage = () => {
                     </div>
                     <div className="flex-1 flex flex-col gap-2">
                       {[...Array(8)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded"
-                        ></div>
+                        <div key={i} className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       ))}
                       <div className="w-3/4 h-2 bg-gray-200 dark:bg-gray-700 rounded"></div>
                     </div>
@@ -160,16 +148,11 @@ const ThirdPage = () => {
                     <line x1="6" y1="20" x2="6" y2="16"></line>
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-blue-600 dark:text-blue-400">
-                  AI Resume Analyzer
-                </h3>
+                <h3 className="text-2xl font-bold mb-4 text-blue-600 dark:text-blue-400">AI Resume Analyzer</h3>
                 <p className="text-gray-700 dark:text-gray-300 mb-6">
-                  Upload your existing resume and receive instant, personalized
-                  feedback. Our AI analyzes your document against industry
-                  standards and job requirements to help you stand out from the
-                  competition.
+                  Upload your existing resume and receive instant, personalized feedback. Our AI analyzes your document
+                  against industry standards and job requirements to help you stand out from the competition.
                 </p>
-
                 <div className="space-y-4 mb-8">
                   {[
                     "Get a comprehensive score and detailed analysis of your resume",
@@ -194,19 +177,12 @@ const ThirdPage = () => {
                           <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
                       </div>
-                      <p className="ml-3 text-gray-700 dark:text-gray-300">
-                        {feature}
-                      </p>
+                      <p className="ml-3 text-gray-700 dark:text-gray-300">{feature}</p>
                     </div>
                   ))}
                 </div>
-
-                <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors">
-                  Analyze Your Resume
-                </button>
               </div>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -248,19 +224,9 @@ const ThirdPage = () => {
             </motion.div>
           </div>
         </div>
-
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mt-24 text-center"
-        >
-        </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ThirdPage;
+export default ThirdPage
