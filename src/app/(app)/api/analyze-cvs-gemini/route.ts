@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
-import { google } from "@ai-sdk/google"
+import { createGoogleGenerativeAI } from "@ai-sdk/google"
 
 interface CVAnalysisRequest {
   jobDescription: string
@@ -46,6 +46,11 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Google AI Studio API key found, starting analysis...")
 
+    // Initialize Google Generative AI
+    const google = createGoogleGenerativeAI({
+      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+    })
+
     const analysisPromises = cvs.map(async (cv, index) => {
       console.log(`🔍 Analyzing CV ${index + 1}/${cvs.length}: ${cv.name}`)
 
@@ -89,13 +94,18 @@ Be specific, objective, and focus only on job-relevant qualifications.`
         console.log(`🚀 Sending request to Google Gemini for ${cv.name}...`)
 
         const { text } = await generateText({
-          model: google("gemini-1.5-flash"), // Using Gemini 1.5 Flash - fast and cost-effective
+          model: google("gemini-2.5-pro"),
           prompt,
           temperature: 0.1,
-          maxTokens: 1000,
+          maxTokens: 4000,
         })
 
-        console.log(`📥 Raw Gemini response for ${cv.name}:`, text.substring(0, 300))
+        console.log(`[v0] Full response object:`, { text, length: text?.length })
+        console.log(`📥 Raw Gemini response for ${cv.name}:`, text?.substring(0, 300) || "EMPTY RESPONSE")
+
+        if (!text || text.trim().length === 0) {
+          throw new Error("Gemini returned an empty response. This may be due to content filtering or API issues.")
+        }
 
         // Try to extract JSON from the response
         let jsonData
