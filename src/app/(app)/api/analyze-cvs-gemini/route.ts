@@ -51,7 +51,10 @@ export async function POST(request: NextRequest) {
       apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     })
 
-    const analysisPromises = cvs.map(async (cv, index) => {
+    const analysis: (CVAnalysisResult & { error?: boolean })[] = []
+
+    for (let index = 0; index < cvs.length; index++) {
+      const cv = cvs[index]
       console.log(`🔍 Analyzing CV ${index + 1}/${cvs.length}: ${cv.name}`)
 
       const prompt = `You are an expert HR recruiter and talent acquisition specialist. Analyze this candidate's CV against the provided job description.
@@ -93,35 +96,54 @@ Be specific, objective, and focus only on job-relevant qualifications.`
       try {
         console.log(`🚀 Sending request to Google Gemini for ${cv.name}...`)
 
-        const { text } = await generateText({
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error("Request timeout after 45 seconds")), 45000)
+        })
+
+        const generatePromise = generateText({
           model: google("gemini-2.5-pro"),
           prompt,
           temperature: 0.1,
           maxTokens: 4000,
         })
 
-        console.log(`[v0] Full response object:`, { text, length: text?.length })
+        const { text } = await Promise.race([generatePromise, timeoutPromise])
+
+        console.log(`[v0] Response received, length: ${text?.length || 0}`)
         console.log(`📥 Raw Gemini response for ${cv.name}:`, text?.substring(0, 300) || "EMPTY RESPONSE")
 
         if (!text || text.trim().length === 0) {
           throw new Error("Gemini returned an empty response. This may be due to content filtering or API issues.")
         }
 
+        const trimmedText = text.trim()
+        if (
+          trimmedText.startsWith("An error") ||
+          trimmedText.startsWith("Error:") ||
+          trimmedText.startsWith('{"error"')
+        ) {
+          throw new Error(`API Error Response: ${trimmedText.substring(0, 200)}`)
+        }
+
         // Try to extract JSON from the response
         let jsonData
         try {
           // Clean the response text
-          const cleanedText = text.trim().replace(/```json\s*|\s*```/g, "")
+          const cleanedText = trimmedText.replace(/```json\s*|\s*```/g, "")
 
           // First try to parse the entire response as JSON
           jsonData = JSON.parse(cleanedText)
-        } catch {
+        } catch (parseError) {
           // If that fails, try to extract JSON from the text
           const jsonMatch = text.match(/\{[\s\S]*\}/)
           if (jsonMatch) {
-            jsonData = JSON.parse(jsonMatch[0])
+            try {
+              jsonData = JSON.parse(jsonMatch[0])
+            } catch {
+              throw new Error(`Failed to parse JSON from response. First 200 chars: ${text.substring(0, 200)}`)
+            }
           } else {
-            throw new Error("No valid JSON found in response")
+            throw new Error(`No valid JSON found in response. First 200 chars: ${text.substring(0, 200)}`)
           }
         }
 
@@ -142,7 +164,11 @@ Be specific, objective, and focus only on job-relevant qualifications.`
         }
 
         console.log(`✅ Final result for ${cv.name}:`, result)
-        return result
+        analysis.push(result)
+
+        if (index < cvs.length - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+        }
       } catch (error) {
         console.error(`❌ Analysis failed for CV ${cv.name}:`, error)
         console.error(`❌ Error details:`, {
@@ -151,7 +177,7 @@ Be specific, objective, and focus only on job-relevant qualifications.`
         })
 
         // Return a more informative error result
-        return {
+        analysis.push({
           candidateName: cv.name.replace(/\.[^/.]+$/, ""),
           score: 0,
           matchPercentage: 0,
@@ -163,15 +189,14 @@ Be specific, objective, and focus only on job-relevant qualifications.`
           cvId: cv.id,
           originalFileName: cv.name,
           error: true,
-        } as CVAnalysisResult & { error: boolean }
+        })
       }
-    })
+    }
 
-    console.log("⏳ Waiting for all Gemini analyses to complete...")
-    const analysis = await Promise.all(analysisPromises)
+    console.log("✅ All Gemini analyses complete")
 
     // Filter out failed analyses for summary calculation
-    const successfulAnalyses = analysis.filter((a) => !("error" in a))
+    const successfulAnalyses = analysis.filter((a) => !a.error)
 
     const summary = {
       totalCandidates: cvs.length,
