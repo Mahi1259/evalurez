@@ -2,6 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
 
+export const dynamic = "force-dynamic"
+
 export async function GET(request: NextRequest) {
   try {
     console.log("🧪 Testing Google AI Studio connection...")
@@ -16,7 +18,7 @@ export async function GET(request: NextRequest) {
     console.log("✅ API key found, testing connection...")
 
     const { text } = await generateText({
-      model: google("gemini-1.5-flash"),
+      model: google("gemini-2.5-flash"),
       prompt: "Say 'Hello, Google AI Studio connection is working!' and nothing else.",
       maxTokens: 50,
     })
@@ -27,7 +29,7 @@ export async function GET(request: NextRequest) {
       success: true,
       message: "Google AI Studio connection is working!",
       response: text,
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       timestamp: new Date().toISOString(),
     })
   } catch (error) {

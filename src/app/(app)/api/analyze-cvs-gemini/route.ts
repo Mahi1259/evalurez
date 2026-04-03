@@ -172,7 +172,7 @@ Be specific, objective, and focus only on job-relevant qualifications.`
 
     // Create API call promise
     const generatePromise = generateText({
-      model: google("gemini-2.0-flash-exp"),
+      model: google("gemini-2.5-flash"),
       prompt,
       temperature: 0.1,
       maxTokens: 2000,
