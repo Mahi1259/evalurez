@@ -126,7 +126,9 @@ async function analyzeSingleCV(
 ): Promise<CVAnalysisResult> {
   console.log(`🔍 Analyzing CV ${index + 1}/${total}: ${cv.name}`)
 
-  const prompt = `You are an expert HR recruiter and talent acquisition specialist. Analyze this candidate's CV against the provided job description.
+  const prompt = `You are an expert HR recruiter. Analyze this CV against the job description.
+
+IMPORTANT: You MUST respond with ONLY a valid JSON object. No explanations, no markdown, no thinking, no text before or after the JSON. Just the raw JSON object.
 
 JOB DESCRIPTION:
 ${jobDescription}
@@ -134,33 +136,12 @@ ${jobDescription}
 CANDIDATE CV:
 ${cv.content}
 
-Please provide a comprehensive assessment in the following JSON format (respond with valid JSON only, no additional text):
+Respond with ONLY this JSON structure:
+{"candidateName":"Full name from CV","score":4,"matchPercentage":85,"strengths":["Strength 1","Strength 2","Strength 3"],"weaknesses":["Weakness 1","Weakness 2"],"keySkills":["Skill 1","Skill 2","Skill 3","Skill 4","Skill 5"],"experience":"Brief experience summary","recommendation":"2-3 sentence hiring recommendation"}
 
-{
-  "candidateName": "Extract the candidate's full name from the CV, or use filename if name not found",
-  "score": 4,
-  "matchPercentage": 85,
-  "strengths": ["Specific strength 1", "Specific strength 2", "Specific strength 3"],
-  "weaknesses": ["Specific weakness 1", "Specific weakness 2"],
-  "keySkills": ["Skill 1", "Skill 2", "Skill 3", "Skill 4", "Skill 5"],
-  "experience": "Brief summary of candidate's experience level and years",
-  "recommendation": "2-3 sentence hiring recommendation with specific reasoning"
-}
-
-EVALUATION CRITERIA:
-- Technical skills alignment with job requirements (40%)
-- Experience level and relevance (30%)
-- Education and certifications (15%)
-- Soft skills and cultural fit indicators (15%)
-
-Rate score from 1-5 where:
-- 5 = Perfect match, highly recommended
-- 4 = Excellent match, strongly recommended  
-- 3 = Good match, recommended for interview
-- 2 = Fair match, consider with reservations
-- 1 = Poor match, not recommended
-
-Be specific, objective, and focus only on job-relevant qualifications.`
+SCORING: 1=Poor, 2=Fair, 3=Good, 4=Excellent, 5=Perfect match.
+CRITERIA: Technical skills (40%), Experience (30%), Education (15%), Soft skills (15%).
+Be specific and objective. Output ONLY valid JSON, nothing else.`
 
   try {
     console.log(`🚀 Sending request to Google Gemini for ${cv.name}...`)
@@ -175,13 +156,17 @@ Be specific, objective, and focus only on job-relevant qualifications.`
       model: google("gemini-2.5-flash"),
       prompt,
       temperature: 0.1,
-      maxTokens: 2000,
+      maxTokens: 8192,
+      providerOptions: {
+        google: { thinkingConfig: { thinkingBudget: 1024 } },
+      },
     })
 
     // Race between API call and timeout
     const { text } = await Promise.race([generatePromise, timeoutPromise])
 
     console.log(`📥 Response received for ${cv.name}, length: ${text?.length || 0}`)
+    console.log(`📄 Raw response preview: ${text?.substring(0, 200)}`)
 
     // Validate response
     if (!text || text.trim().length === 0) {
@@ -242,23 +227,48 @@ Be specific, objective, and focus only on job-relevant qualifications.`
 }
 
 function parseGeminiResponse(text: string, cvName: string): any {
+  // Strategy 1: Try direct parse after removing markdown code blocks
   try {
-    // Remove markdown code blocks if present
     const cleanedText = text.replace(/```json\s*|\s*```/g, "").trim()
-
-    // Try to parse the entire cleaned response
     return JSON.parse(cleanedText)
-  } catch (parseError) {
-    // If that fails, try to extract JSON object from the text
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (jsonMatch) {
-      try {
-        return JSON.parse(jsonMatch[0])
-      } catch {
-        throw new Error(`Failed to parse JSON from response for ${cvName}`)
+  } catch {
+    // continue to next strategy
+  }
+
+  // Strategy 2: Find the outermost JSON object with balanced braces
+  const firstBrace = text.indexOf("{")
+  if (firstBrace !== -1) {
+    let depth = 0
+    let lastBrace = -1
+    for (let i = firstBrace; i < text.length; i++) {
+      if (text[i] === "{") depth++
+      if (text[i] === "}") {
+        depth--
+        if (depth === 0) {
+          lastBrace = i
+          break
+        }
       }
-    } else {
-      throw new Error(`No valid JSON found in response for ${cvName}`)
+    }
+    if (lastBrace !== -1) {
+      try {
+        return JSON.parse(text.substring(firstBrace, lastBrace + 1))
+      } catch {
+        // continue to next strategy
+      }
     }
   }
+
+  // Strategy 3: Greedy regex match
+  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  if (jsonMatch) {
+    try {
+      return JSON.parse(jsonMatch[0])
+    } catch {
+      // fall through
+    }
+  }
+
+  console.error(`❌ Could not parse response for ${cvName}. Raw text:`, text.substring(0, 500))
+  throw new Error(`No valid JSON found in response for ${cvName}`)
 }
