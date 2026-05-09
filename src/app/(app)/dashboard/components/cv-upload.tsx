@@ -63,7 +63,7 @@ export function CVUpload({ onCVsChange, cvs }: CVUploadProps) {
               content: data.text.trim(),
             })
             successCount++
-            console.log(`✅ CV extracted using ${data.method}:`, {
+            console.log(`CV extracted using ${data.method}:`, {
               file: file.name,
               originalLength: data.originalLength,
               cleanedLength: data.cleanedLength,

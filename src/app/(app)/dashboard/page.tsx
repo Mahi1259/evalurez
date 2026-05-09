@@ -38,7 +38,7 @@ export default function Dashboard() {
 
     setIsAnalyzing(true)
     try {
-      console.log(`🚀 Starting Gemini AI analysis for ${cvs.length} CVs...`)
+      console.log(`Starting Gemini AI analysis for ${cvs.length} CVs...`)
 
       const response = await fetch("/api/analyze-cvs-gemini", {
         method: "POST",
@@ -57,7 +57,7 @@ export default function Dashboard() {
       }
 
       const results = await response.json()
-      console.log(`✅ Gemini AI analysis completed:`, results.summary)
+      console.log(`Gemini AI analysis completed:`, results.summary)
 
       setAnalysisResults(results.analysis)
 
@@ -68,7 +68,7 @@ export default function Dashboard() {
         )
       }
     } catch (error) {
-      console.error("❌ Analysis error:", error)
+      console.error("Analysis error:", error)
       alert(
         `Gemini AI Analysis failed: ${error instanceof Error ? error.message : "Unknown error"}. Please check your Google AI Studio API key and try again.`,
       )

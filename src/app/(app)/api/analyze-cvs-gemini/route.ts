@@ -29,8 +29,8 @@ export async function POST(request: NextRequest) {
   try {
     const { jobDescription, cvs }: CVAnalysisRequest = await request.json()
 
-    console.log(`🤖 Starting Gemini AI analysis for ${cvs.length} CVs`)
-    console.log(`📝 Job description length: ${jobDescription.length} characters`)
+    console.log(`Starting Gemini AI analysis for ${cvs.length} CVs`)
+    console.log(`Job description length: ${jobDescription.length} characters`)
 
     // Validation
     if (!jobDescription || !cvs || cvs.length === 0) {
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     // Check API key
     if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
-      console.error("❌ Google AI Studio API key not found in environment variables")
+      console.error("Google AI Studio API key not found in environment variables")
       return NextResponse.json(
         {
           error:
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log("✅ Google AI Studio API key found, starting parallel analysis...")
+    console.log("Google AI Studio API key found, starting parallel analysis...")
 
     // Initialize Google Generative AI
     const google = createGoogleGenerativeAI({
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     // Wait for all analyses to complete
     const analysis = await Promise.all(analysisPromises)
 
-    console.log("✅ All Gemini analyses complete")
+    console.log("All Gemini analyses complete")
 
     // Calculate summary statistics
     const successfulAnalyses = analysis.filter((a) => !a.error)
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
           : 0,
     }
 
-    console.log(`✅ Gemini analysis complete: ${summary.successfulAnalyses}/${summary.totalCandidates} successful`)
+    console.log(`Gemini analysis complete: ${summary.successfulAnalyses}/${summary.totalCandidates} successful`)
 
     return NextResponse.json({
       analysis,
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       analysisType: "gemini-ai",
     })
   } catch (error) {
-    console.error("❌ Gemini CV analysis error:", error)
+    console.error("Gemini CV analysis error:", error)
     return NextResponse.json(
       {
         error: "Gemini AI analysis failed. Please check your configuration and try again.",
@@ -124,7 +124,7 @@ async function analyzeSingleCV(
   jobDescription: string,
   google: ReturnType<typeof createGoogleGenerativeAI>
 ): Promise<CVAnalysisResult> {
-  console.log(`🔍 Analyzing CV ${index + 1}/${total}: ${cv.name}`)
+  console.log(`Analyzing CV ${index + 1}/${total}: ${cv.name}`)
 
   const prompt = `You are an expert HR recruiter. Analyze this CV against the job description.
 
@@ -144,7 +144,7 @@ CRITERIA: Technical skills (40%), Experience (30%), Education (15%), Soft skills
 Be specific and objective. Output ONLY valid JSON, nothing else.`
 
   try {
-    console.log(`🚀 Sending request to Google Gemini for ${cv.name}...`)
+    console.log(`Sending request to Google Gemini for ${cv.name}...`)
 
     // Create timeout promise
     const timeoutPromise = new Promise<never>((_, reject) => {
@@ -165,8 +165,8 @@ Be specific and objective. Output ONLY valid JSON, nothing else.`
     // Race between API call and timeout
     const { text } = await Promise.race([generatePromise, timeoutPromise])
 
-    console.log(`📥 Response received for ${cv.name}, length: ${text?.length || 0}`)
-    console.log(`📄 Raw response preview: ${text?.substring(0, 200)}`)
+    console.log(`Response received for ${cv.name}, length: ${text?.length || 0}`)
+    console.log(`Raw response preview: ${text?.substring(0, 200)}`)
 
     // Validate response
     if (!text || text.trim().length === 0) {
@@ -201,10 +201,10 @@ Be specific and objective. Output ONLY valid JSON, nothing else.`
       originalFileName: cv.name,
     }
 
-    console.log(`✅ Successfully analyzed ${cv.name}`)
+    console.log(`Successfully analyzed ${cv.name}`)
     return result
   } catch (error) {
-    console.error(`❌ Analysis failed for CV ${cv.name}:`, error)
+    console.error(`Analysis failed for CV ${cv.name}:`, error)
 
     const errorMessage = error instanceof Error ? error.message : "Unknown error"
 
@@ -269,6 +269,6 @@ function parseGeminiResponse(text: string, cvName: string): any {
     }
   }
 
-  console.error(`❌ Could not parse response for ${cvName}. Raw text:`, text.substring(0, 500))
+  console.error(`Could not parse response for ${cvName}. Raw text:`, text.substring(0, 500))
   throw new Error(`No valid JSON found in response for ${cvName}`)
 }
